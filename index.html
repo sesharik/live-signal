@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Signal</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #0b0b0f;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 20px;
+    }
+
+    .app {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+    }
+
+    .status {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #141419;
+      border: 1px solid #25252d;
+      border-radius: 16px;
+      padding: 15px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .symbol {
+      font-weight: 600;
+    }
+
+    .price {
+      font-family: monospace;
+      font-size: 18px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 300px;
+      display: block;
+      background: #0f0f14;
+      border-radius: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 8px;
+      border: 1px solid #30303a;
+      border-radius: 10px;
+      background: #1b1b22;
+      color: white;
+      font-size: 15px;
+    }
+
+    button.active {
+      background: white;
+      color: black;
+    }
+
+    .signal {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 14px;
+      text-align: center;
+      background: #18181f;
+    }
+
+    .signal-title {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 5px;
+    }
+
+    .signal-value {
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .wait {
+      color: #aaa;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>LIVE SIGNAL</h1>
+  <div class="status" id="status">Подключение к Deriv...</div>
+
+  <div class="card">
+
+    <div class="top">
+      <div class="symbol">Volatility 100 Index</div>
+      <div class="price" id="price">—</div>
+    </div>
+
+    <canvas id="chart"></canvas>
+
+    <div class="buttons">
+      <button class="active" data-time="1">1 мин</button>
+      <button data-time="5">5 мин</button>
+      <button data-time="10">10 мин</button>
+    </div>
+
+    <div class="signal">
+      <div class="signal-title">СИГНАЛ</div>
+      <div class="signal-value wait" id="signal">WAIT</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const APP_ID = 1089;
+const SYMBOL = "R_100";
+
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
+
+const priceElement = document.getElementById("price");
+const statusElement = document.getElementById("status");
+
+let prices = [];
+let selectedTime = 1;
+let socket;
+
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width = canvas.clientWidth * ratio;
+  canvas.height = canvas.clientHeight * ratio;
+
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+  drawChart();
+}
+
+window.addEventListener("resize", resizeCanvas);
+
+function drawChart() {
+
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+
+  ctx.clearRect(0, 0, width, height);
+
+  if (prices.length < 2) {
+    return;
+  }
+
+  const visible = prices.slice(-120);
+
+  let min = Math.min(...visible);
+  let max = Math.max(...visible);
+
+  if (max === min) {
+    max += 0.0001;
+    min -= 0.0001;
+  }
+
+  const padding = 20;
+
+  ctx.beginPath();
+
+  visible.forEach((value, index) => {
+
+    const x =
+      padding +
+      (index / (visible.length - 1)) *
+      (width - padding * 2);
+
+    const y =
+      height -
+      padding -
+      ((value - min) / (max - min)) *
+      (height - padding * 2);
+
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+
+  });
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function connect() {
+
+  socket = new WebSocket(
+    `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`
+  );
+
+  socket.onopen = () => {
+
+    statusElement.textContent = "Подключено • получаем историю";
+
+    socket.send(JSON.stringify({
+      ticks_history: SYMBOL,
+      count: 120,
+      end: "latest",
+      style: "ticks"
+    }));
+
+  };
+
+  socket.onmessage = (event) => {
+
+    const data = JSON.parse(event.data);
+
+    if (data.history) {
+
+      prices = data.history.prices.map(Number);
+
+      drawChart();
+
+      statusElement.textContent =
+        "Подключено • живые данные";
+
+      socket.send(JSON.stringify({
+        ticks: SYMBOL,
+        subscribe: 1
+      }));
+
+      return;
+    }
+
+    if (data.tick) {
+
+      const price = Number(data.tick.quote);
+
+      prices.push(price);
+
+      if (prices.length > 200) {
+        prices.shift();
+      }
+
+      priceElement.textContent = price.toFixed(2);
+
+      drawChart();
+    }
+
+  };
+
+  socket.onerror = () => {
+    statusElement.textContent = "Ошибка подключения";
+  };
+
+  socket.onclose = () => {
+    statusElement.textContent = "Соединение потеряно • переподключение...";
+
+    setTimeout(connect, 3000);
+  };
+}
+
+document.querySelectorAll("button").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    document.querySelectorAll("button")
+      .forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    selectedTime = Number(button.dataset.time);
+
+  });
+
+});
+
+resizeCanvas();
+connect();
+
+</script>
+
+</body>
+</html>
