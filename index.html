@@ -1,144 +1,255 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Signal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Live Signal</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+*{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      background: #0b0b0f;
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 20px;
-    }
+body{
+  margin:0;
+  background:#09090c;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding:16px;
+}
 
-    .app {
-      max-width: 700px;
-      margin: 0 auto;
-    }
+.app{
+  max-width:700px;
+  margin:auto;
+}
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
-    }
+h1{
+  margin:0;
+  font-size:28px;
+}
 
-    .status {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
+.status{
+  color:#888;
+  font-size:13px;
+  margin:5px 0 16px;
+}
 
-    .card {
-      background: #141419;
-      border: 1px solid #25252d;
-      border-radius: 16px;
-      padding: 15px;
-    }
+.card{
+  background:#131318;
+  border:1px solid #28282f;
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+}
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
 
-    .symbol {
-      font-weight: 600;
-    }
+.symbol{
+  font-weight:600;
+  font-size:14px;
+}
 
-    .price {
-      font-family: monospace;
-      font-size: 18px;
-    }
+.price{
+  font-family:monospace;
+  font-size:18px;
+}
 
-    canvas {
-      width: 100%;
-      height: 300px;
-      display: block;
-      background: #0f0f14;
-      border-radius: 10px;
-    }
+canvas{
+  width:100%;
+  height:300px;
+  display:block;
+  background:#0e0e13;
+  border-radius:12px;
+}
 
-    .buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-    }
+.buttons{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
 
-    button {
-      flex: 1;
-      padding: 12px 8px;
-      border: 1px solid #30303a;
-      border-radius: 10px;
-      background: #1b1b22;
-      color: white;
-      font-size: 15px;
-    }
+button{
+  flex:1;
+  border:1px solid #303039;
+  background:#1b1b22;
+  color:#fff;
+  border-radius:10px;
+  padding:12px 5px;
+  font-size:15px;
+}
 
-    button.active {
-      background: white;
-      color: black;
-    }
+button.active{
+  background:#fff;
+  color:#000;
+}
 
-    .signal {
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 14px;
-      text-align: center;
-      background: #18181f;
-    }
+.signal{
+  margin-top:14px;
+  padding:18px;
+  border-radius:14px;
+  background:#19191f;
+  text-align:center;
+}
 
-    .signal-title {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 5px;
-    }
+.label{
+  color:#888;
+  font-size:12px;
+  margin-bottom:5px;
+}
 
-    .signal-value {
-      font-size: 30px;
-      font-weight: 800;
-    }
+.signalValue{
+  font-size:32px;
+  font-weight:800;
+}
 
-    .wait {
-      color: #aaa;
-    }
-  </style>
+.wait{color:#aaa}
+.up{color:#55d889}
+.down{color:#ff5d68}
+
+.confidence{
+  margin-top:5px;
+  color:#888;
+  font-size:13px;
+}
+
+.timer{
+  margin-top:12px;
+  font-size:25px;
+  font-family:monospace;
+}
+
+.result{
+  margin-top:10px;
+  font-weight:700;
+  font-size:18px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.stat{
+  background:#19191f;
+  border-radius:12px;
+  padding:12px 6px;
+  text-align:center;
+}
+
+.stat b{
+  display:block;
+  font-size:20px;
+}
+
+.stat span{
+  color:#888;
+  font-size:11px;
+}
+
+.history{
+  max-height:220px;
+  overflow:auto;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #24242b;
+  padding:9px 2px;
+  font-size:12px;
+}
+
+.win{color:#55d889}
+.loss{color:#ff5d68}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <h1>LIVE SIGNAL</h1>
-  <div class="status" id="status">Подключение к Deriv...</div>
+<h1>LIVE SIGNAL</h1>
 
-  <div class="card">
+<div class="status" id="status">
+Подключение к Deriv...
+</div>
 
-    <div class="top">
-      <div class="symbol">Volatility 100 Index</div>
-      <div class="price" id="price">—</div>
-    </div>
+<div class="card">
 
-    <canvas id="chart"></canvas>
+<div class="top">
+<div class="symbol">Volatility 100 Index</div>
+<div class="price" id="price">—</div>
+</div>
 
-    <div class="buttons">
-      <button class="active" data-time="1">1 мин</button>
-      <button data-time="5">5 мин</button>
-      <button data-time="10">10 мин</button>
-    </div>
+<canvas id="chart"></canvas>
 
-    <div class="signal">
-      <div class="signal-title">СИГНАЛ</div>
-      <div class="signal-value wait" id="signal">WAIT</div>
-    </div>
+<div class="buttons">
+<button class="active" data-time="1">1 мин</button>
+<button data-time="5">5 мин</button>
+<button data-time="10">10 мин</button>
+</div>
 
-  </div>
+<div class="signal">
+
+<div class="label">ДЕМО-ПРОГНОЗ</div>
+
+<div id="signal" class="signalValue wait">
+WAIT
+</div>
+
+<div id="confidence" class="confidence">
+Ожидание данных
+</div>
+
+<div id="timer" class="timer">
+—
+</div>
+
+<div id="result" class="result">
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="label">СТАТИСТИКА</div>
+
+<div class="stats">
+
+<div class="stat">
+<b id="total">0</b>
+<span>Сигналов</span>
+</div>
+
+<div class="stat">
+<b id="wins">0</b>
+<span>WIN</span>
+</div>
+
+<div class="stat">
+<b id="accuracy">0%</b>
+<span>Точность</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="label">ИСТОРИЯ</div>
+
+<div id="history" class="history">
+Пока нет завершённых прогнозов.
+</div>
+
+</div>
 
 </div>
 
@@ -150,159 +261,616 @@ const SYMBOL = "R_100";
 const canvas = document.getElementById("chart");
 const ctx = canvas.getContext("2d");
 
-const priceElement = document.getElementById("price");
-const statusElement = document.getElementById("status");
+const statusEl = document.getElementById("status");
+const priceEl = document.getElementById("price");
+const signalEl = document.getElementById("signal");
+const confidenceEl = document.getElementById("confidence");
+const timerEl = document.getElementById("timer");
+const resultEl = document.getElementById("result");
 
-let prices = [];
-let selectedTime = 1;
 let socket;
+let prices = [];
 
-function resizeCanvas() {
+let selectedMinutes = 1;
+
+let activePrediction = null;
+let timerInterval = null;
+
+let total = 0;
+let wins = 0;
+
+const history = [];
+
+
+/* -------------------------
+   CANVAS
+------------------------- */
+
+function resizeCanvas(){
+
   const ratio = window.devicePixelRatio || 1;
 
   canvas.width = canvas.clientWidth * ratio;
   canvas.height = canvas.clientHeight * ratio;
 
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.setTransform(ratio,0,0,ratio,0,0);
 
   drawChart();
 }
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize",resizeCanvas);
 
-function drawChart() {
+
+function drawChart(){
 
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
 
-  ctx.clearRect(0, 0, width, height);
+  ctx.clearRect(0,0,width,height);
 
-  if (prices.length < 2) {
-    return;
-  }
+  if(prices.length < 2) return;
 
   const visible = prices.slice(-120);
 
   let min = Math.min(...visible);
   let max = Math.max(...visible);
 
-  if (max === min) {
+  if(max === min){
     max += 0.0001;
     min -= 0.0001;
   }
 
-  const padding = 20;
+  const padding = 18;
 
   ctx.beginPath();
 
-  visible.forEach((value, index) => {
+  visible.forEach((value,i)=>{
 
     const x =
       padding +
-      (index / (visible.length - 1)) *
-      (width - padding * 2);
+      i/(visible.length-1) *
+      (width-padding*2);
 
     const y =
-      height -
-      padding -
-      ((value - min) / (max - min)) *
-      (height - padding * 2);
+      height-padding -
+      (value-min)/(max-min) *
+      (height-padding*2);
 
-    if (index === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
+    if(i===0)
+      ctx.moveTo(x,y);
+    else
+      ctx.lineTo(x,y);
 
   });
 
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle="#ffffff";
+  ctx.lineWidth=2;
   ctx.stroke();
+
 }
 
-function connect() {
+
+/* -------------------------
+   DERIV
+------------------------- */
+
+function connect(){
 
   socket = new WebSocket(
     `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`
   );
 
-  socket.onopen = () => {
+  socket.onopen = ()=>{
 
-    statusElement.textContent = "Подключено • получаем историю";
+    statusEl.textContent =
+      "Подключено • получаем историю";
 
     socket.send(JSON.stringify({
-      ticks_history: SYMBOL,
-      count: 120,
-      end: "latest",
-      style: "ticks"
+      ticks_history:SYMBOL,
+      count:300,
+      end:"latest",
+      style:"ticks"
     }));
 
   };
 
-  socket.onmessage = (event) => {
+
+  socket.onmessage = event=>{
 
     const data = JSON.parse(event.data);
 
-    if (data.history) {
 
-      prices = data.history.prices.map(Number);
+    if(data.history){
+
+      prices =
+        data.history.prices.map(Number);
 
       drawChart();
 
-      statusElement.textContent =
-        "Подключено • живые данные";
-
       socket.send(JSON.stringify({
-        ticks: SYMBOL,
-        subscribe: 1
+        ticks:SYMBOL,
+        subscribe:1
       }));
+
+      statusEl.textContent =
+        "Подключено • живые данные";
 
       return;
     }
 
-    if (data.tick) {
 
-      const price = Number(data.tick.quote);
+    if(data.tick){
+
+      const price =
+        Number(data.tick.quote);
 
       prices.push(price);
 
-      if (prices.length > 200) {
+      if(prices.length > 500)
         prices.shift();
-      }
 
-      priceElement.textContent = price.toFixed(2);
+      priceEl.textContent =
+        price.toFixed(2);
 
       drawChart();
+
+      analyze();
+
     }
 
   };
 
-  socket.onerror = () => {
-    statusElement.textContent = "Ошибка подключения";
+
+  socket.onerror = ()=>{
+
+    statusEl.textContent =
+      "Ошибка подключения";
+
   };
 
-  socket.onclose = () => {
-    statusElement.textContent = "Соединение потеряно • переподключение...";
 
-    setTimeout(connect, 3000);
+  socket.onclose = ()=>{
+
+    statusEl.textContent =
+      "Соединение потеряно • переподключение...";
+
+    setTimeout(connect,3000);
+
   };
+
 }
 
-document.querySelectorAll("button").forEach(button => {
 
-  button.addEventListener("click", () => {
+/* -------------------------
+   SIMPLE DEMO MODEL
+------------------------- */
 
-    document.querySelectorAll("button")
-      .forEach(b => b.classList.remove("active"));
+function average(arr){
 
-    button.classList.add("active");
+  if(!arr.length) return 0;
 
-    selectedTime = Number(button.dataset.time);
+  return arr.reduce((a,b)=>a+b,0)/arr.length;
+
+}
+
+
+function analyze(){
+
+  if(prices.length < 40)
+    return;
+
+  /*
+    Это намеренно простая демонстрационная модель.
+
+    Она НЕ утверждает, что знает будущее.
+    Она сравнивает краткосрочное движение
+    с более длинным движением.
+  */
+
+  const short =
+    prices.slice(-8);
+
+  const medium =
+    prices.slice(-30);
+
+  const shortAvg =
+    average(short);
+
+  const mediumAvg =
+    average(medium);
+
+  const last =
+    prices[prices.length-1];
+
+  const previous =
+    prices[prices.length-2];
+
+  let direction = "WAIT";
+  let confidence = 0;
+
+  if(
+    shortAvg > mediumAvg &&
+    last > previous
+  ){
+
+    direction = "UP";
+
+    confidence =
+      Math.min(
+        95,
+        50 +
+        Math.abs(shortAvg-mediumAvg) /
+        Math.max(last,0.0001) *
+        50000
+      );
+
+  }
+  else if(
+    shortAvg < mediumAvg &&
+    last < previous
+  ){
+
+    direction = "DOWN";
+
+    confidence =
+      Math.min(
+        95,
+        50 +
+        Math.abs(shortAvg-mediumAvg) /
+        Math.max(last,0.0001) *
+        50000
+      );
+
+  }
+  else{
+
+    direction = "WAIT";
+
+  }
+
+
+  /*
+    Сигнал создаётся только если
+    нет другого активного прогноза.
+  */
+
+  if(
+    direction !== "WAIT" &&
+    !activePrediction &&
+    confidence >= 60
+  ){
+
+    createPrediction(
+      direction,
+      confidence,
+      last
+    );
+
+  }
+
+}
+
+
+/* -------------------------
+   PREDICTION
+------------------------- */
+
+function createPrediction(
+  direction,
+  confidence,
+  entryPrice
+){
+
+  const duration =
+    selectedMinutes * 60 * 1000;
+
+  activePrediction = {
+
+    direction,
+    confidence,
+    entryPrice,
+    start:Date.now(),
+    end:Date.now()+duration
+
+  };
+
+  total++;
+
+  updateStats();
+
+  signalEl.textContent =
+    direction;
+
+  signalEl.className =
+    "signalValue " +
+    (direction==="UP" ? "up":"down");
+
+  confidenceEl.textContent =
+    "Уверенность модели: " +
+    Math.round(confidence) +
+    "% • демо";
+
+  resultEl.textContent =
+    "";
+
+  startTimer();
+
+}
+
+
+/* -------------------------
+   TIMER
+------------------------- */
+
+function startTimer(){
+
+  clearInterval(timerInterval);
+
+  timerInterval =
+    setInterval(()=>{
+
+      if(!activePrediction){
+
+        clearInterval(timerInterval);
+        return;
+
+      }
+
+      const remaining =
+        activePrediction.end -
+        Date.now();
+
+      if(remaining <= 0){
+
+        finishPrediction();
+
+        return;
+
+      }
+
+      const seconds =
+        Math.ceil(remaining/1000);
+
+      const minutes =
+        Math.floor(seconds/60);
+
+      const sec =
+        seconds % 60;
+
+      timerEl.textContent =
+        String(minutes).padStart(2,"0") +
+        ":" +
+        String(sec).padStart(2,"0");
+
+    },250);
+
+}
+
+
+/* -------------------------
+   RESULT
+------------------------- */
+
+function finishPrediction(){
+
+  clearInterval(timerInterval);
+
+  if(!activePrediction)
+    return;
+
+  const prediction =
+    activePrediction;
+
+  const finalPrice =
+    prices[prices.length-1];
+
+  let win = false;
+
+  if(prediction.direction === "UP"){
+
+    win =
+      finalPrice > prediction.entryPrice;
+
+  }
+
+  if(prediction.direction === "DOWN"){
+
+    win =
+      finalPrice < prediction.entryPrice;
+
+  }
+
+  if(win){
+
+    wins++;
+
+    resultEl.textContent =
+      "WIN";
+
+    resultEl.className =
+      "result win";
+
+  }
+  else{
+
+    resultEl.textContent =
+      "LOSS";
+
+    resultEl.className =
+      "result loss";
+
+  }
+
+  addHistory(
+    prediction,
+    finalPrice,
+    win
+  );
+
+  activePrediction = null;
+
+  timerEl.textContent = "Готово";
+
+  updateStats();
+
+}
+
+
+/* -------------------------
+   HISTORY
+------------------------- */
+
+function addHistory(
+  prediction,
+  finalPrice,
+  win
+){
+
+  history.unshift({
+
+    direction:
+      prediction.direction,
+
+    minutes:
+      selectedMinutes,
+
+    entry:
+      prediction.entryPrice,
+
+    final:
+      finalPrice,
+
+    result:
+      win ? "WIN":"LOSS"
 
   });
 
+  if(history.length > 20)
+    history.pop();
+
+  renderHistory();
+
+}
+
+
+function renderHistory(){
+
+  const container =
+    document.getElementById("history");
+
+  if(!history.length){
+
+    container.textContent =
+      "Пока нет завершённых прогнозов.";
+
+    return;
+
+  }
+
+  container.innerHTML =
+    history.map(item=>`
+
+      <div class="row">
+
+        <span>
+          ${item.direction}
+          • ${item.minutes} мин
+        </span>
+
+        <span>
+          ${item.entry.toFixed(2)}
+          →
+          ${item.final.toFixed(2)}
+        </span>
+
+        <b class="${item.result==="WIN"?"win":"loss"}">
+          ${item.result}
+        </b>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* -------------------------
+   STATS
+------------------------- */
+
+function updateStats(){
+
+  document.getElementById("total")
+    .textContent = total;
+
+  document.getElementById("wins")
+    .textContent = wins;
+
+  const finished =
+    history.length;
+
+  const accuracy =
+    finished ?
+    Math.round(wins/finished*100) :
+    0;
+
+  document.getElementById("accuracy")
+    .textContent =
+      accuracy + "%";
+
+}
+
+
+/* -------------------------
+   TIME BUTTONS
+------------------------- */
+
+document
+.querySelectorAll("button")
+.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    ()=>{
+
+      if(activePrediction)
+        return;
+
+      document
+      .querySelectorAll("button")
+      .forEach(b =>
+        b.classList.remove("active")
+      );
+
+      button.classList.add("active");
+
+      selectedMinutes =
+        Number(button.dataset.time);
+
+      signalEl.textContent =
+        "WAIT";
+
+      signalEl.className =
+        "signalValue wait";
+
+      confidenceEl.textContent =
+        "Ожидание нового прогноза";
+
+      timerEl.textContent =
+        "—";
+
+      resultEl.textContent =
+        "";
+
+    }
+  );
+
 });
+
+
+/* -------------------------
+   START
+------------------------- */
 
 resizeCanvas();
 connect();
