@@ -223,7 +223,6 @@ button:disabled{
 Запуск...
 </div>
 
-
 <div class="card">
 
 <div class="head">
@@ -257,7 +256,6 @@ button:disabled{
 
 </div>
 
-
 <div class="card">
 
 <div class="signalbox">
@@ -279,7 +277,6 @@ WAIT
 <div id="timer" class="timer">
 —
 </div>
-
 
 <div class="entry">
 
@@ -306,7 +303,6 @@ WAIT
 </div>
 
 </div>
-
 
 <div class="card">
 
@@ -342,7 +338,6 @@ WAIT
 
 </div>
 
-
 <div class="card">
 
 <div class="caption">
@@ -356,7 +351,6 @@ WAIT
 </div>
 
 </div>
-
 
 <div class="card">
 
@@ -417,7 +411,6 @@ Ticks:
 
 </div>
 
-
 <div class="card">
 
 <div class="info">
@@ -441,7 +434,6 @@ Ticks:
 
 </div>
 
-
 <script>
 
 "use strict";
@@ -454,11 +446,8 @@ Ticks:
 const SYMBOL = "1HZ100V";
 
 const ENDPOINTS = [
-
  "wss://api.derivws.com/trading/v1/options/ws/public",
-
  "wss://ws.binaryws.com/websockets/v3"
-
 ];
 
 const MAX_POINTS = 1200;
@@ -469,31 +458,22 @@ const MAX_POINTS = 1200;
 ===================================================== */
 
 let ws = null;
-
 let endpointIndex = 0;
-
 let reconnectTimer = null;
-
 let reconnectAttempt = 0;
 
 let prices = [];
-
 let epochs = [];
 
 let currentPrice = null;
-
 let ticksReceived = 0;
 
 let timeframe = 1;
-
 let signal = null;
-
 let entry = null;
 
 let history = [];
-
 let wins = 0;
-
 let losses = 0;
 
 
@@ -501,110 +481,65 @@ let losses = 0;
    DOM
 ===================================================== */
 
-const status =
- document.getElementById("status");
+const status = document.getElementById("status");
+const symbolEl = document.getElementById("symbol");
+const priceEl = document.getElementById("price");
 
-const symbolEl =
- document.getElementById("symbol");
+const signalEl = document.getElementById("signal");
+const confidenceEl = document.getElementById("confidence");
+const ageEl = document.getElementById("age");
+const timerEl = document.getElementById("timer");
 
-const priceEl =
- document.getElementById("price");
+const entryPriceEl = document.getElementById("entryPrice");
+const enterBtn = document.getElementById("enter");
+const cancelBtn = document.getElementById("cancel");
 
-const signalEl =
- document.getElementById("signal");
+const resultEl = document.getElementById("result");
 
-const confidenceEl =
- document.getElementById("confidence");
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
 
-const ageEl =
- document.getElementById("age");
-
-const timerEl =
- document.getElementById("timer");
-
-const entryPriceEl =
- document.getElementById("entryPrice");
-
-const enterBtn =
- document.getElementById("enter");
-
-const cancelBtn =
- document.getElementById("cancel");
-
-const resultEl =
- document.getElementById("result");
-
-const canvas =
- document.getElementById("chart");
-
-const ctx =
- canvas.getContext("2d");
-
-
-const dStage =
- document.getElementById("dStage");
-
-const dEndpoint =
- document.getElementById("dEndpoint");
-
-const dSocket =
- document.getElementById("dSocket");
-
-const dCode =
- document.getElementById("dCode");
-
-const dReason =
- document.getElementById("dReason");
-
-const dType =
- document.getElementById("dType");
-
-const dMessage =
- document.getElementById("dMessage");
-
-const dError =
- document.getElementById("dError");
-
-const dTicks =
- document.getElementById("dTicks");
+const dStage = document.getElementById("dStage");
+const dEndpoint = document.getElementById("dEndpoint");
+const dSocket = document.getElementById("dSocket");
+const dCode = document.getElementById("dCode");
+const dReason = document.getElementById("dReason");
+const dType = document.getElementById("dType");
+const dMessage = document.getElementById("dMessage");
+const dError = document.getElementById("dError");
+const dTicks = document.getElementById("dTicks");
 
 
 /* =====================================================
-   DIAGNOSTИКА
+   ДИАГНОСТИКА
 ===================================================== */
 
 function stage(text,type){
 
  dStage.textContent = text;
-
  dStage.className = type || "warn";
-
  status.textContent = text;
 
 }
-
 
 function debugMessage(data){
 
  try{
 
-  const text =
-   JSON.stringify(data);
+  const text = JSON.stringify(data);
 
   dMessage.textContent =
    text.length > 900
-    ? text.slice(0,900)+"..."
+    ? text.slice(0,900) + "..."
     : text;
 
  }catch(e){
 
-  dMessage.textContent =
-   String(data);
+  dMessage.textContent = String(data);
 
  }
 
 }
-
 
 function clearDebug(){
 
@@ -633,25 +568,20 @@ function connect(){
 
  }
 
- const url =
-  ENDPOINTS[endpointIndex];
+ const url = ENDPOINTS[endpointIndex];
 
- dEndpoint.textContent =
-  url;
+ dEndpoint.textContent = url;
 
- dSocket.textContent =
-  "CONNECTING";
+ dSocket.textContent = "CONNECTING";
 
  stage(
   "Подключение к Deriv...",
   "warn"
  );
 
-
  try{
 
-  ws =
-   new WebSocket(url);
+  ws = new WebSocket(url);
 
  }catch(error){
 
@@ -669,8 +599,7 @@ function connect(){
 
   reconnectAttempt = 0;
 
-  dSocket.textContent =
-   "OPEN";
+  dSocket.textContent = "OPEN";
 
   stage(
    "WebSocket подключён",
@@ -679,14 +608,13 @@ function connect(){
 
 
   /*
-     Сначала просим список инструментов.
+     ИСПРАВЛЕНО:
+     product_type удалён.
   */
 
   send({
 
    active_symbols:"brief",
-
-   product_type:"basic",
 
    req_id:100
 
@@ -694,7 +622,7 @@ function connect(){
 
 
   /*
-     Затем историю.
+     История.
   */
 
   send({
@@ -713,7 +641,7 @@ function connect(){
 
 
   /*
-     И live ticks.
+     Живой поток.
   */
 
   send({
@@ -735,21 +663,18 @@ function connect(){
 
   try{
 
-   data =
-    JSON.parse(event.data);
+   data = JSON.parse(event.data);
 
   }catch(error){
 
    dError.textContent =
-    "JSON: "+error.message;
+    "JSON: " + error.message;
 
    return;
 
   }
 
-
-  dSocket.textContent =
-   "OPEN";
+  dSocket.textContent = "OPEN";
 
   dType.textContent =
    data.msg_type || "unknown";
@@ -758,7 +683,7 @@ function connect(){
 
 
   /*
-     API ERROR
+     Ошибка API.
   */
 
   if(data.error){
@@ -767,8 +692,8 @@ function connect(){
     (
      data.error.code ||
      "API_ERROR"
-    )+
-    " — "+
+    ) +
+    " — " +
     (
      data.error.message ||
      "неизвестная ошибка"
@@ -785,7 +710,7 @@ function connect(){
 
 
   /*
-     ИСТОРИЯ
+     ИСТОРИЯ.
   */
 
   if(
@@ -794,34 +719,23 @@ function connect(){
   ){
 
    const p =
-    Array.isArray(
-     data.history.prices
-    )
-    ?
-    data.history.prices
-     .map(Number)
-     :
-    [];
+    Array.isArray(data.history.prices)
+    ? data.history.prices.map(Number)
+    : [];
 
    const t =
-    Array.isArray(
-     data.history.times
-    )
-    ?
-    data.history.times
-     .map(Number)
-     :
-    [];
+    Array.isArray(data.history.times)
+    ? data.history.times.map(Number)
+    : [];
 
 
    if(p.length){
 
     prices = p.slice(-MAX_POINTS);
-
     epochs = t.slice(-MAX_POINTS);
 
     currentPrice =
-     prices[prices.length-1];
+     prices[prices.length - 1];
 
     priceEl.textContent =
      currentPrice.toFixed(2);
@@ -841,7 +755,7 @@ function connect(){
 
 
   /*
-     TICK
+     LIVE TICK.
   */
 
   if(
@@ -863,7 +777,6 @@ function connect(){
    currentPrice = price;
 
    prices.push(price);
-
    epochs.push(epoch);
 
    ticksReceived++;
@@ -872,20 +785,15 @@ function connect(){
     String(ticksReceived);
 
 
-   if(
-    prices.length >
-    MAX_POINTS
-   ){
+   if(prices.length > MAX_POINTS){
 
     prices.shift();
-
     epochs.shift();
 
    }
 
 
-   symbolEl.textContent =
-    SYMBOL;
+   symbolEl.textContent = SYMBOL;
 
    priceEl.textContent =
     price.toFixed(2);
@@ -895,7 +803,6 @@ function connect(){
     "Подключено • живые данные",
     "ok"
    );
-
 
    draw();
 
@@ -907,29 +814,23 @@ function connect(){
 
 
   /*
-     ACTIVE SYMBOLS
+     ACTIVE SYMBOLS.
   */
 
   if(
-   data.msg_type ===
-   "active_symbols"
+   data.msg_type === "active_symbols"
   ){
 
    const found =
-    Array.isArray(
-     data.active_symbols
-    )
-    &&
+    Array.isArray(data.active_symbols) &&
     data.active_symbols.some(
-     x =>
-      x.symbol === SYMBOL
+     x => x.symbol === SYMBOL
     );
 
 
    if(found){
 
-    symbolEl.textContent =
-     SYMBOL;
+    symbolEl.textContent = SYMBOL;
 
    }
 
@@ -942,8 +843,7 @@ function connect(){
 
  ws.onerror = function(){
 
-  dSocket.textContent =
-   "ERROR";
+  dSocket.textContent = "ERROR";
 
   dError.textContent =
    "Браузер сообщил ошибку WebSocket";
@@ -958,8 +858,7 @@ function connect(){
 
  ws.onclose = function(event){
 
-  dSocket.textContent =
-   "CLOSED";
+  dSocket.textContent = "CLOSED";
 
   dCode.textContent =
    String(event.code);
@@ -983,6 +882,25 @@ function connect(){
 
 
 /* =====================================================
+   ПЕРЕКЛЮЧЕНИЕ ENDPOINT
+===================================================== */
+
+function nextEndpoint(){
+
+ endpointIndex =
+  (
+   endpointIndex + 1
+  ) %
+  ENDPOINTS.length;
+
+ reconnectAttempt = 0;
+
+ scheduleReconnect();
+
+}
+
+
+/* =====================================================
    ОТПРАВКА
 ===================================================== */
 
@@ -990,8 +908,7 @@ function send(data){
 
  if(
   !ws ||
-  ws.readyState !==
-  WebSocket.OPEN
+  ws.readyState !== WebSocket.OPEN
  ){
 
   return false;
@@ -1010,7 +927,7 @@ function send(data){
  }catch(error){
 
   dError.textContent =
-   "send: "+error.message;
+   "send: " + error.message;
 
   return false;
 
@@ -1020,26 +937,16 @@ function send(data){
 
 
 /* =====================================================
-   ПОВТОРНОЕ ПОДКЛЮЧЕНИЕ
+   RECONNECT
 ===================================================== */
 
 function scheduleReconnect(){
 
  clearTimeout(reconnectTimer);
 
-
  reconnectAttempt++;
 
-
- /*
-    Если текущий endpoint несколько
-    раз подряд не работает,
-    переключаемся на другой.
- */
-
- if(
-  reconnectAttempt >= 3
- ){
+ if(reconnectAttempt >= 3){
 
   endpointIndex =
    (
@@ -1056,13 +963,13 @@ function scheduleReconnect(){
   Math.min(
    15000,
    2000 +
-   reconnectAttempt*2000
+   reconnectAttempt * 2000
   );
 
 
  dReason.textContent +=
-  " • повтор через "+
-  Math.ceil(delay/1000)+
+  " • повтор через " +
+  Math.ceil(delay / 1000) +
   " сек.";
 
 
@@ -1085,12 +992,10 @@ function resizeCanvas(){
   window.devicePixelRatio || 1;
 
  canvas.width =
-  canvas.clientWidth *
-  ratio;
+  canvas.clientWidth * ratio;
 
  canvas.height =
-  canvas.clientHeight *
-  ratio;
+  canvas.clientHeight * ratio;
 
  ctx.setTransform(
   ratio,
@@ -1104,7 +1009,6 @@ function resizeCanvas(){
  draw();
 
 }
-
 
 window.addEventListener(
  "resize",
@@ -1147,51 +1051,33 @@ function draw(){
  if(max === min){
 
   max += 1;
-
   min -= 1;
 
  }
 
 
- /*
-    Сетка
- */
-
- ctx.strokeStyle =
-  "#202027";
-
+ ctx.strokeStyle = "#202027";
  ctx.lineWidth = 1;
 
 
  for(
-  let i=1;
-  i<5;
+  let i = 1;
+  i < 5;
   i++
  ){
 
   const y =
-   height*i/5;
+   height * i / 5;
 
   ctx.beginPath();
 
-  ctx.moveTo(
-   0,
-   y
-  );
-
-  ctx.lineTo(
-   width,
-   y
-  );
+  ctx.moveTo(0,y);
+  ctx.lineTo(width,y);
 
   ctx.stroke();
 
  }
 
-
- /*
-    Цена
- */
 
  ctx.beginPath();
 
@@ -1200,20 +1086,20 @@ function draw(){
   (price,i)=>{
 
    const x =
-    i/
-    (data.length-1)*
+    i /
+    (data.length - 1) *
     width;
 
    const y =
     height -
     (
-     (price-min)/
-     (max-min)
-    )*
+     (price - min) /
+     (max - min)
+    ) *
     height;
 
 
-   if(i===0)
+   if(i === 0)
     ctx.moveTo(x,y);
    else
     ctx.lineTo(x,y);
@@ -1222,29 +1108,23 @@ function draw(){
  );
 
 
- ctx.strokeStyle =
-  "#ffffff";
-
+ ctx.strokeStyle = "#ffffff";
  ctx.lineWidth = 2;
 
  ctx.stroke();
 
 
- /*
-    Последняя точка
- */
-
  const last =
-  data[data.length-1];
+  data[data.length - 1];
 
  const x = width;
 
  const y =
   height -
   (
-   (last-min)/
-   (max-min)
-  )*
+   (last - min) /
+   (max - min)
+  ) *
   height;
 
 
@@ -1255,11 +1135,10 @@ function draw(){
   y,
   4,
   0,
-  Math.PI*2
+  Math.PI * 2
  );
 
- ctx.fillStyle =
-  "#ffffff";
+ ctx.fillStyle = "#ffffff";
 
  ctx.fill();
 
@@ -1288,10 +1167,7 @@ function slope(a){
  if(a.length < 2)
   return 0;
 
- return (
-  a[a.length-1] -
-  a[0]
- );
+ return a[a.length - 1] - a[0];
 
 }
 
@@ -1301,25 +1177,22 @@ function stdev(a){
  if(a.length < 2)
   return 0;
 
- const m =
-  avg(a);
+ const m = avg(a);
 
  let s = 0;
 
- for(
-  const x of a
- ){
+ for(const x of a){
 
   s +=
    Math.pow(
-    x-m,
+    x - m,
     2
    );
 
  }
 
  return Math.sqrt(
-  s/a.length
+  s / a.length
  );
 
 }
@@ -1348,27 +1221,22 @@ function analyze(){
   prices.slice(-120);
 
 
- const s =
-  slope(short);
-
- const m =
-  slope(medium);
-
- const l =
-  slope(long);
+ const s = slope(short);
+ const m = slope(medium);
+ const l = slope(long);
 
 
- const changes=[];
+ const changes = [];
 
 
  for(
-  let i=1;
-  i<long.length;
+  let i = 1;
+  i < long.length;
   i++
  ){
 
   changes.push(
-   long[i]-long[i-1]
+   long[i] - long[i - 1]
   );
 
  }
@@ -1414,15 +1282,9 @@ function analyze(){
   score -= 1;
 
 
- /*
-    Не выдаём направление,
-    если движение слишком слабое
-    относительно текущего шума.
- */
-
  if(
   Math.abs(s) <
-  noise*0.5
+  noise * 0.5
  ){
 
   showWait();
@@ -1432,18 +1294,15 @@ function analyze(){
  }
 
 
- let direction =
-  "WAIT";
+ let direction = "WAIT";
 
 
  if(score >= 3)
-  direction =
-   "UP";
+  direction = "UP";
 
 
  if(score <= -3)
-  direction =
-   "DOWN";
+  direction = "DOWN";
 
 
  if(direction === "WAIT"){
@@ -1455,17 +1314,12 @@ function analyze(){
  }
 
 
- /*
-    Это сила внутреннего сигнала,
-    НЕ математическая вероятность выигрыша.
- */
-
  const confidence =
   Math.min(
    95,
    Math.round(
     55 +
-    Math.abs(score)*6
+    Math.abs(score) * 6
    )
   );
 
@@ -1483,16 +1337,12 @@ function analyze(){
  }
 
 
- signal={
+ signal = {
 
   direction,
-
   confidence,
-
   price:currentPrice,
-
   time:Date.now(),
-
   timeframe
 
  };
@@ -1504,7 +1354,7 @@ function analyze(){
 
 
 /* =====================================================
-   SIGNAL UI
+   SIGNAL
 ===================================================== */
 
 function showWait(){
@@ -1513,8 +1363,7 @@ function showWait(){
   return;
 
 
- signalEl.textContent =
-  "WAIT";
+ signalEl.textContent = "WAIT";
 
  signalEl.className =
   "signal wait";
@@ -1537,19 +1386,17 @@ function renderSignal(){
   signal.direction;
 
  signalEl.className =
-  "signal "+
+  "signal " +
   (
    signal.direction === "UP"
-   ?
-   "up"
-   :
-   "down"
+   ? "up"
+   : "down"
   );
 
 
  confidenceEl.textContent =
-  "Сила сигнала: "+
-  signal.confidence+
+  "Сила сигнала: " +
+  signal.confidence +
   "% • это НЕ вероятность выигрыша";
 
 
@@ -1571,13 +1418,13 @@ function updateAge(){
    (
     Date.now() -
     signal.time
-   )/1000
+   ) / 1000
   );
 
 
  ageEl.textContent =
-  "Сигнал обновлён "+
-  sec+
+  "Сигнал обновлён " +
+  sec +
   " сек. назад";
 
 }
@@ -1587,24 +1434,16 @@ function updateAge(){
    ВХОД
 ===================================================== */
 
-enterBtn.onclick=function(){
+enterBtn.onclick = function(){
 
  if(
   !signal ||
-  !Number.isFinite(
-   currentPrice
-  )
+  !Number.isFinite(currentPrice)
  )
   return;
 
 
- /*
-    ВАЖНО:
-    entryPrice берётся именно
-    в момент нажатия кнопки.
- */
-
- entry={
+ entry = {
 
   direction:
    signal.direction,
@@ -1622,9 +1461,7 @@ enterBtn.onclick=function(){
 
   expiry:
    Date.now() +
-   timeframe*
-   60*
-   1000
+   timeframe * 60 * 1000
 
  };
 
@@ -1633,12 +1470,10 @@ enterBtn.onclick=function(){
   currentPrice.toFixed(2);
 
 
- resultEl.textContent =
-  "";
+ resultEl.textContent = "";
 
  resultEl.className =
   "result";
-
 
  enterBtn.disabled = true;
 
@@ -1651,24 +1486,21 @@ enterBtn.onclick=function(){
    ОТМЕНА
 ===================================================== */
 
-cancelBtn.onclick=function(){
+cancelBtn.onclick = function(){
 
  entry = null;
 
  entryPriceEl.textContent =
   "Не зафиксирован";
 
- resultEl.textContent =
-  "";
+ resultEl.textContent = "";
 
  resultEl.className =
   "result";
 
- timerEl.textContent =
-  "—";
+ timerEl.textContent = "—";
 
- cancelBtn.disabled =
-  true;
+ cancelBtn.disabled = true;
 
 };
 
@@ -1681,21 +1513,19 @@ function formatTime(ms){
 
  const sec =
   Math.ceil(
-   Math.max(
-    0,
-    ms
-   )/1000
+   Math.max(0,ms) / 1000
   );
 
  const min =
-  Math.floor(sec/60);
+  Math.floor(sec / 60);
 
  const s =
-  sec%60;
+  sec % 60;
+
 
  return (
-  String(min).padStart(2,"0")+
-  ":"+
+  String(min).padStart(2,"0") +
+  ":" +
   String(s).padStart(2,"0")
  );
 
@@ -1733,14 +1563,13 @@ function updateTimer(){
   timerEl.textContent =
    formatTime(
     signal.time +
-    timeframe*60000 -
+    timeframe * 60000 -
     Date.now()
    );
 
  }else{
 
-  timerEl.textContent =
-   "—";
+  timerEl.textContent = "—";
 
  }
 
@@ -1755,9 +1584,7 @@ function finish(){
 
  if(
   !entry ||
-  !Number.isFinite(
-   currentPrice
-  )
+  !Number.isFinite(currentPrice)
  )
   return;
 
@@ -1768,9 +1595,7 @@ function finish(){
  let win = false;
 
 
- if(
-  entry.direction === "UP"
- ){
+ if(entry.direction === "UP"){
 
   win =
    finalPrice >
@@ -1779,9 +1604,7 @@ function finish(){
  }
 
 
- if(
-  entry.direction === "DOWN"
- ){
+ if(entry.direction === "DOWN"){
 
   win =
    finalPrice <
@@ -1790,9 +1613,10 @@ function finish(){
  }
 
 
- const record={
+ const record = {
 
-  time:entry.entryTime,
+  time:
+   entry.entryTime,
 
   direction:
    entry.direction,
@@ -1810,10 +1634,8 @@ function finish(){
 
   result:
    win
-   ?
-   "WIN"
-   :
-   "LOSS"
+   ? "WIN"
+   : "LOSS"
 
  };
 
@@ -1838,21 +1660,14 @@ function finish(){
 
 
  resultEl.textContent =
-  win
-  ?
-  "WIN"
-  :
-  "LOSS";
-
+  win ? "WIN" : "LOSS";
 
  resultEl.className =
-  "result "+
+  "result " +
   (
    win
-   ?
-   "win"
-   :
-   "loss"
+   ? "win"
+   : "loss"
   );
 
 
@@ -1864,8 +1679,7 @@ function finish(){
 
  signal = null;
 
- cancelBtn.disabled =
-  true;
+ cancelBtn.disabled = true;
 
 
  setTimeout(
@@ -1883,37 +1697,25 @@ function finish(){
 function updateStats(){
 
  const total =
-  wins+losses;
+  wins + losses;
 
 
- document.getElementById(
-  "total"
- ).textContent =
-  total;
+ document.getElementById("total")
+  .textContent = total;
 
+ document.getElementById("wins")
+  .textContent = wins;
 
- document.getElementById(
-  "wins"
- ).textContent =
-  wins;
+ document.getElementById("losses")
+  .textContent = losses;
 
-
- document.getElementById(
-  "losses"
- ).textContent =
-  losses;
-
-
- document.getElementById(
-  "accuracy"
- ).textContent =
-  total
-  ?
-  Math.round(
-   wins/total*100
-  )+"%"
-  :
-  "0%";
+ document.getElementById("accuracy")
+  .textContent =
+   total
+   ? Math.round(
+      wins / total * 100
+     ) + "%"
+   : "0%";
 
 }
 
@@ -1925,9 +1727,7 @@ function updateStats(){
 function renderHistory(){
 
  const box =
-  document.getElementById(
-   "history"
-  );
+  document.getElementById("history");
 
 
  if(!history.length){
@@ -1944,17 +1744,14 @@ function renderHistory(){
   history
   .slice(0,50)
   .map(
-   x=>`
+   x => `
 
 <div class="row">
 
 <div>
 
-${new Date(
- x.time
-).toLocaleTimeString(
- "ru-RU"
-)}
+${new Date(x.time)
+ .toLocaleTimeString("ru-RU")}
 
  •
 
@@ -2019,20 +1816,20 @@ function load(){
 
  }catch(e){
 
-  history=[];
+  history = [];
 
  }
 
 
  wins =
   history.filter(
-   x=>x.result==="WIN"
+   x => x.result === "WIN"
   ).length;
 
 
  losses =
   history.filter(
-   x=>x.result==="LOSS"
+   x => x.result === "LOSS"
   ).length;
 
 
@@ -2064,9 +1861,9 @@ function save(){
 document
  .querySelectorAll(".tf")
  .forEach(
-  button=>{
+  button => {
 
-   button.onclick=function(){
+   button.onclick = function(){
 
     if(entry)
      return;
@@ -2076,15 +1873,11 @@ document
      .querySelectorAll(".tf")
      .forEach(
       x =>
-       x.classList.remove(
-        "active"
-       )
+       x.classList.remove("active")
      );
 
 
-    button.classList.add(
-     "active"
-    );
+    button.classList.add("active");
 
 
     timeframe =
@@ -2104,7 +1897,7 @@ document
 
 
 /* =====================================================
-   LOOP
+   ЦИКЛЫ
 ===================================================== */
 
 setInterval(
