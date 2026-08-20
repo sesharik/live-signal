@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LIVE SIGNAL</title>
 
 <style>
@@ -11,14 +11,14 @@
 body{
     margin:0;
     background:#08080b;
-    color:#fff;
+    color:#f5f5f7;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 .app{
     max-width:850px;
     margin:auto;
-    padding:16px;
+    padding:15px;
 }
 
 h1{
@@ -27,14 +27,14 @@ h1{
 }
 
 .status{
-    color:#777;
+    margin-top:4px;
     font-size:13px;
-    margin-top:3px;
+    color:#888;
 }
 
 .card{
     background:#121217;
-    border:1px solid #27272e;
+    border:1px solid #28282f;
     border-radius:18px;
     padding:15px;
     margin-top:13px;
@@ -44,6 +44,7 @@ h1{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:10px;
 }
 
 .name{
@@ -62,11 +63,12 @@ h1{
 }
 
 canvas{
+    display:block;
     width:100%;
-    height:320px;
+    height:300px;
+    margin-top:12px;
     background:#0d0d12;
     border-radius:13px;
-    margin-top:12px;
 }
 
 .buttons{
@@ -77,7 +79,8 @@ canvas{
 }
 
 button{
-    border:1px solid #303038;
+    width:100%;
+    border:1px solid #303039;
     background:#1b1b21;
     color:#fff;
     border-radius:11px;
@@ -115,18 +118,19 @@ button:disabled{
 }
 
 .wait{color:#aaa}
-.up{color:#54dc89}
+.up{color:#55dc89}
 .down{color:#ff6570}
 
-.confidence{
-    color:#999;
+.small{
+    color:#888;
     font-size:12px;
+    margin-top:4px;
 }
 
 .timer{
+    margin-top:8px;
     font-family:monospace;
     font-size:28px;
-    margin-top:8px;
 }
 
 .entry{
@@ -136,23 +140,22 @@ button:disabled{
 }
 
 .entryPrice{
+    margin:6px 0;
     font-family:monospace;
     font-size:19px;
-    margin:6px 0;
 }
 
 .action{
-    width:100%;
     margin-top:8px;
 }
 
 .result{
+    margin-top:10px;
     font-size:23px;
     font-weight:900;
-    margin-top:10px;
 }
 
-.win{color:#54dc89}
+.win{color:#55dc89}
 .loss{color:#ff6570}
 
 .stats{
@@ -183,16 +186,35 @@ button:disabled{
     overflow:auto;
 }
 
-.historyRow{
-    border-bottom:1px solid #27272e;
+.row{
     padding:9px 2px;
+    border-bottom:1px solid #27272e;
     font-size:11px;
 }
 
-.historyBottom{
+.row2{
     color:#777;
     margin-top:3px;
 }
+
+.debug{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11px;
+    line-height:1.5;
+    color:#bbb;
+    background:#09090c;
+    border-radius:12px;
+    padding:12px;
+    overflow-wrap:anywhere;
+}
+
+.debug div{
+    margin-bottom:5px;
+}
+
+.ok{color:#55dc89}
+.err{color:#ff6570}
+.warn{color:#ffbf58}
 
 .info{
     color:#888;
@@ -209,7 +231,7 @@ button:disabled{
 <h1>LIVE SIGNAL</h1>
 
 <div id="status" class="status">
-Подключение к Deriv...
+Запуск...
 </div>
 
 
@@ -218,13 +240,15 @@ button:disabled{
 <div class="header">
 
 <div>
+
 <div class="name">
 Volatility 100 Index
 </div>
 
 <div id="symbol" class="code">
-поиск инструмента...
+1HZ100V
 </div>
+
 </div>
 
 <div id="price" class="price">
@@ -233,7 +257,9 @@ Volatility 100 Index
 
 </div>
 
+
 <canvas id="chart"></canvas>
+
 
 <div class="buttons">
 
@@ -266,12 +292,11 @@ Volatility 100 Index
 WAIT
 </div>
 
-<div id="confidence" class="confidence">
-Собираем данные...
+<div id="confidence" class="small">
+Ожидание данных...
 </div>
 
-<div id="signalAge" class="confidence">
-</div>
+<div id="signalAge" class="small"></div>
 
 <div id="timer" class="timer">
 —
@@ -355,21 +380,86 @@ WAIT
 </div>
 
 
+<!-- ДИАГНОСТИКА -->
+
+<div class="card">
+
+<div class="caption">
+ДИАГНОСТИКА ПОДКЛЮЧЕНИЯ
+</div>
+
+<br>
+
+<div class="debug">
+
+<div>
+Этап:
+<span id="debugStage" class="warn">
+запуск
+</span>
+</div>
+
+<div>
+WebSocket:
+<span id="debugSocket">
+—
+</span>
+</div>
+
+<div>
+URL:
+<span id="debugUrl">
+—
+</span>
+</div>
+
+<div>
+Код закрытия:
+<span id="debugCode">
+—
+</span>
+</div>
+
+<div>
+Причина:
+<span id="debugReason">
+—
+</span>
+</div>
+
+<div>
+Последний ответ:
+<span id="debugMessage">
+—
+</span>
+</div>
+
+<div>
+Последняя ошибка:
+<span id="debugError">
+—
+</span>
+</div>
+
+</div>
+
+</div>
+
+
 <div class="card">
 
 <div class="info">
 
 <b>ДЕМО-РЕЖИМ</b><br><br>
 
-Приложение получает публичные рыночные данные.
-Оно не подключается к торговому аккаунту,
+Приложение использует только публичные
+рыночные данные Deriv.
+
+Оно не авторизуется в аккаунте,
 не получает баланс и не отправляет сделки.
 
-«Я ВОШЛА СЕЙЧАС» только фиксирует текущую
-рыночную цену для виртуального теста.
-
-Результат рассчитывается после выбранного
-времени.
+Кнопка «Я ВОШЛА СЕЙЧАС» только создаёт
+виртуальную запись для проверки алгоритма.
 
 </div>
 
@@ -383,21 +473,22 @@ WAIT
 "use strict";
 
 
-/* =========================
-   НАСТРОЙКИ
-========================= */
+/* =====================================================
+   CONFIG
+===================================================== */
 
-const APP_ID = 1089;
+const SYMBOL = "1HZ100V";
 
-const SYMBOL_NAME = "Volatility 100 Index";
+const WS_URL =
+"wss://ws.binaryws.com/websockets/v3";
 
 const MAX_POINTS = 1200;
-
-let SYMBOL = "1HZ100V";
 
 let ws = null;
 
 let reconnectTimer = null;
+
+let reconnectAttempts = 0;
 
 let prices = [];
 
@@ -418,9 +509,9 @@ let wins = 0;
 let losses = 0;
 
 
-/* =========================
-   ELEMENTS
-========================= */
+/* =====================================================
+   DOM
+===================================================== */
 
 const status =
 document.getElementById("status");
@@ -462,21 +553,83 @@ const ctx =
 canvas.getContext("2d");
 
 
-/* =========================
-   STORAGE
-========================= */
+const debugStage =
+document.getElementById("debugStage");
 
-function load(){
+const debugSocket =
+document.getElementById("debugSocket");
+
+const debugUrl =
+document.getElementById("debugUrl");
+
+const debugCode =
+document.getElementById("debugCode");
+
+const debugReason =
+document.getElementById("debugReason");
+
+const debugMessage =
+document.getElementById("debugMessage");
+
+const debugError =
+document.getElementById("debugError");
+
+
+/* =====================================================
+   DEBUG
+===================================================== */
+
+debugUrl.textContent =
+WS_URL;
+
+
+function stage(text,type="warn"){
+
+debugStage.textContent=text;
+
+debugStage.className=type;
+
+status.textContent=text;
+
+}
+
+
+function messageDebug(data){
 
 try{
 
-const x =
+debugMessage.textContent =
+JSON.stringify(data);
+
+}catch(e){
+
+debugMessage.textContent =
+String(data);
+
+}
+
+}
+
+
+/* =====================================================
+   STORAGE
+===================================================== */
+
+function loadHistory(){
+
+try{
+
+const saved =
 localStorage.getItem(
 "liveSignalHistory"
 );
 
-if(x)
-history=JSON.parse(x);
+if(saved){
+
+history =
+JSON.parse(saved);
+
+}
 
 }catch(e){
 
@@ -501,46 +654,90 @@ renderHistory();
 }
 
 
-function save(){
+function saveHistory(){
+
+try{
 
 localStorage.setItem(
 "liveSignalHistory",
 JSON.stringify(history)
 );
 
+}catch(e){}
+
 }
 
 
-/* =========================
-   CONNECT
-========================= */
+/* =====================================================
+   WEBSOCKET
+===================================================== */
 
 function connect(){
 
 clearTimeout(reconnectTimer);
 
-status.textContent =
-"Подключение к Deriv...";
+reconnectAttempts++;
 
-
-ws =
-new WebSocket(
-"wss://ws.binaryws.com/websockets/v3"
+stage(
+"Создаём WebSocket...",
+"warn"
 );
 
+debugSocket.textContent =
+"создание";
+
+debugCode.textContent =
+"—";
+
+debugReason.textContent =
+"—";
+
+debugMessage.textContent =
+"—";
+
+debugError.textContent =
+"—";
+
+
+try{
+
+ws =
+new WebSocket(WS_URL);
+
+}catch(error){
+
+debugError.textContent =
+error.message ||
+String(error);
+
+stage(
+"WebSocket не удалось создать",
+"err"
+);
+
+scheduleReconnect();
+
+return;
+
+}
+
+
+/* OPEN */
 
 ws.onopen=()=>{
 
-status.textContent =
-"Deriv подключён • поиск Volatility 100";
+reconnectAttempts=0;
+
+debugSocket.textContent =
+"OPEN";
+
+stage(
+"WebSocket подключён",
+"ok"
+);
 
 
-/*
-   Получаем актуальные символы.
-*/
-
-ws.send(
-JSON.stringify({
+send({
 
 active_symbols:"brief",
 
@@ -548,113 +745,88 @@ product_type:"basic",
 
 req_id:1
 
-})
-);
-
-};
+});
 
 
-ws.onmessage=(event)=>{
-
-let data;
-
-try{
-
-data=JSON.parse(event.data);
-
-}catch(e){
-
-return;
-
-}
-
-
-/* =========================
-   SYMBOLS
-========================= */
-
-if(
-data.msg_type==="active_symbols"
-){
-
-const list =
-data.active_symbols || [];
-
-
-/*
-   Сначала пытаемся найти
-   точное имя.
-*/
-
-let found =
-list.find(
-x=>
-String(
-x.display_name||""
-).toLowerCase()
-.includes(
-"volatility 100"
-)
-);
-
-
-/*
-   Если не нашли —
-   используем актуальный код,
-   который Deriv показывает
-   в своей документации.
-*/
-
-if(found){
-
-SYMBOL =
-found.symbol;
-
-}
-
-
-symbolEl.textContent =
-SYMBOL;
-
-status.textContent =
-"Инструмент найден • загрузка данных";
-
-
-/*
-   История.
-*/
-
-ws.send(
-JSON.stringify({
-
-ticks_history:SYMBOL,
-
-end:"latest",
-
-count:MAX_POINTS,
-
-style:"ticks",
-
-req_id:2
-
-})
-);
-
-
-/*
-   Живые тики.
-*/
-
-ws.send(
-JSON.stringify({
+send({
 
 ticks:SYMBOL,
 
 subscribe:1,
 
+req_id:2
+
+});
+
+
+send({
+
+ticks_history:SYMBOL,
+
+count:300,
+
+end:"latest",
+
+style:"ticks",
+
 req_id:3
 
-})
+});
+
+};
+
+
+/* MESSAGE */
+
+ws.onmessage=(event)=>{
+
+debugSocket.textContent =
+"OPEN";
+
+let data;
+
+try{
+
+data =
+JSON.parse(event.data);
+
+}catch(error){
+
+debugError.textContent =
+"JSON parse: "+
+error.message;
+
+return;
+
+}
+
+
+messageDebug(data);
+
+
+/* API ERROR */
+
+if(data.error){
+
+debugError.textContent =
+(
+data.error.code||
+"API_ERROR"
+)+
+": "+
+(
+data.error.message||
+"неизвестная ошибка"
+);
+
+stage(
+"Deriv вернул ошибку",
+"err"
+);
+
+console.error(
+"DERIV ERROR",
+data
 );
 
 return;
@@ -662,25 +834,56 @@ return;
 }
 
 
-/* =========================
-   HISTORY
-========================= */
+/* ACTIVE SYMBOLS */
 
 if(
-data.msg_type==="history" &&
+data.msg_type===
+"active_symbols"
+){
+
+stage(
+"Символы получены • подключаем поток",
+"ok"
+);
+
+return;
+
+}
+
+
+/* HISTORY */
+
+if(
+data.msg_type===
+"history"
+&&
 data.history
 ){
 
-prices =
-(data.history.prices||[])
-.map(Number);
+const p =
+Array.isArray(
+data.history.prices
+)
+?
+data.history.prices.map(Number)
+:
+[];
 
-times =
-(data.history.times||[])
-.map(Number);
+const t =
+Array.isArray(
+data.history.times
+)
+?
+data.history.times.map(Number)
+:
+[];
 
 
-if(prices.length){
+if(p.length){
+
+prices=p;
+
+times=t;
 
 currentPrice =
 prices[
@@ -690,48 +893,57 @@ prices.length-1
 priceEl.textContent =
 currentPrice.toFixed(2);
 
-}
+stage(
+"История получена • ждём live ticks",
+"ok"
+);
 
 draw();
+
+}
 
 return;
 
 }
 
 
-/* =========================
-   TICK
-========================= */
+/* TICK */
 
 if(
-data.msg_type==="tick" &&
+data.msg_type===
+"tick"
+&&
 data.tick
 ){
 
-const price =
+const quote =
 Number(
 data.tick.quote
 );
 
-const time =
+const epoch =
 Number(
 data.tick.epoch
 );
 
+
 if(
-!Number.isFinite(price)
+!Number.isFinite(quote)
 )
 return;
 
 
-currentPrice=price;
+currentPrice=quote;
 
-prices.push(price);
+prices.push(quote);
 
-times.push(time);
+times.push(epoch);
 
 
-if(prices.length>MAX_POINTS){
+if(
+prices.length>
+MAX_POINTS
+){
 
 prices.shift();
 
@@ -741,7 +953,12 @@ times.shift();
 
 
 priceEl.textContent =
-price.toFixed(2);
+quote.toFixed(2);
+
+stage(
+"Подключено • живые данные",
+"ok"
+);
 
 draw();
 
@@ -751,59 +968,142 @@ return;
 
 }
 
+};
 
-/* =========================
-   ERROR
-========================= */
 
-if(data.error){
+/* ERROR */
 
-status.textContent =
-"Ошибка Deriv: "+
-(
-data.error.message||
-"неизвестная ошибка"
-);
+ws.onerror=(event)=>{
 
-console.error(data);
+debugSocket.textContent =
+"ERROR";
+
+let text =
+"Браузер сообщил ошибку WebSocket";
+
+if(event){
+
+try{
+
+if(event.message)
+text+=": "+event.message;
+
+}catch(e){}
 
 }
 
+debugError.textContent=text;
+
+stage(
+"Ошибка WebSocket — смотри диагностику ниже",
+"err"
+);
+
 };
 
 
-ws.onerror=()=>{
+/* CLOSE */
 
-status.textContent =
-"Ошибка соединения";
+ws.onclose=(event)=>{
+
+debugSocket.textContent =
+"CLOSED";
+
+debugCode.textContent =
+event.code;
+
+debugReason.textContent =
+event.reason ||
+"(браузер/сервер не передал причину)";
+
+
+stage(
+"Соединение закрыто — диагностика записана",
+"err"
+);
+
+scheduleReconnect();
 
 };
 
+}
 
-ws.onclose=()=>{
 
-status.textContent =
-"Соединение закрыто • переподключение";
+/* =====================================================
+   SEND
+===================================================== */
+
+function send(payload){
+
+if(
+!ws ||
+ws.readyState!==WebSocket.OPEN
+){
+
+debugError.textContent =
+"Попытка отправить данные при закрытом WebSocket";
+
+return;
+
+}
+
+
+try{
+
+ws.send(
+JSON.stringify(payload)
+);
+
+}catch(error){
+
+debugError.textContent =
+"send(): "+
+error.message;
+
+}
+
+}
+
+
+/* =====================================================
+   RECONNECT
+===================================================== */
+
+function scheduleReconnect(){
+
+clearTimeout(reconnectTimer);
+
+const seconds =
+Math.min(
+15,
+Math.max(
+2,
+reconnectAttempts
+)
+);
+
+debugReason.textContent +=
+" • повтор через "+
+seconds+
+" сек.";
 
 reconnectTimer =
 setTimeout(
 connect,
-3000
+seconds*1000
 );
-
-};
 
 }
 
 
-/* =========================
-   CHART
-========================= */
+/* =====================================================
+   CANVAS
+===================================================== */
 
-function resize(){
+function resizeCanvas(){
 
 const ratio =
-window.devicePixelRatio||1;
+window.devicePixelRatio || 1;
 
 canvas.width =
 canvas.clientWidth*ratio;
@@ -827,24 +1127,25 @@ draw();
 
 window.addEventListener(
 "resize",
-resize
+resizeCanvas
 );
 
 
 function draw(){
 
-const w =
+const width =
 canvas.clientWidth;
 
-const h =
+const height =
 canvas.clientHeight;
 
 ctx.clearRect(
 0,
 0,
-w,
-h
+width,
+height
 );
+
 
 if(prices.length<2)
 return;
@@ -859,9 +1160,11 @@ Math.min(...data);
 let max =
 Math.max(...data);
 
+
 if(max===min){
 
 max+=1;
+
 min-=1;
 
 }
@@ -874,37 +1177,47 @@ ctx.strokeStyle =
 
 ctx.lineWidth=1;
 
-for(let i=1;i<5;i++){
+for(
+let i=1;
+i<5;
+i++
+){
 
 const y =
-h*i/5;
+height*i/5;
 
 ctx.beginPath();
 
 ctx.moveTo(0,y);
 
-ctx.lineTo(w,y);
+ctx.lineTo(width,y);
 
 ctx.stroke();
 
 }
 
 
-/* PRICE LINE */
+/* LINE */
 
 ctx.beginPath();
+
 
 data.forEach(
 (p,i)=>{
 
 const x =
-i/(data.length-1)*w;
+i/
+(data.length-1)*
+width;
 
 const y =
-h-
+height-
 (
-(p-min)/(max-min)
-)*h;
+(p-min)/
+(max-min)
+)*
+height;
+
 
 if(i===0)
 ctx.moveTo(x,y);
@@ -914,6 +1227,7 @@ ctx.lineTo(x,y);
 }
 );
 
+
 ctx.strokeStyle="#fff";
 
 ctx.lineWidth=2;
@@ -921,18 +1235,21 @@ ctx.lineWidth=2;
 ctx.stroke();
 
 
-/* CURRENT POINT */
+/* CURRENT */
 
 const last =
 data[data.length-1];
 
-const x=w;
+const x=width;
 
 const y =
-h-
+height-
 (
-(last-min)/(max-min)
-)*h;
+(last-min)/
+(max-min)
+)*
+height;
+
 
 ctx.beginPath();
 
@@ -951,9 +1268,9 @@ ctx.fill();
 }
 
 
-/* =========================
+/* =====================================================
    MATH
-========================= */
+===================================================== */
 
 function average(arr){
 
@@ -1004,9 +1321,9 @@ x-avg,
 }
 
 
-/* =========================
-   ANALYSIS
-========================= */
+/* =====================================================
+   SIGNAL
+===================================================== */
 
 function analyze(){
 
@@ -1039,6 +1356,7 @@ slope(long);
 
 const changes=[];
 
+
 for(
 let i=1;
 i<long.length;
@@ -1057,8 +1375,9 @@ deviation(changes);
 
 
 if(
-noise<=0 ||
 !Number.isFinite(noise)
+||
+noise<=0
 ){
 
 showWait();
@@ -1092,12 +1411,8 @@ if(l<0)
 score-=1;
 
 
-const movement =
-Math.abs(s);
-
-
 if(
-movement<
+Math.abs(s)<
 noise*0.5
 ){
 
@@ -1146,7 +1461,7 @@ currentSignal.timeframe===
 timeframe
 ){
 
-updateAge();
+updateSignalAge();
 
 return;
 
@@ -1173,17 +1488,17 @@ renderSignal();
 }
 
 
-/* =========================
+/* =====================================================
    SIGNAL UI
-========================= */
+===================================================== */
 
 function showWait(){
 
 if(entry)
 return;
 
-
-signalEl.textContent="WAIT";
+signalEl.textContent=
+"WAIT";
 
 signalEl.className=
 "signal wait";
@@ -1217,38 +1532,39 @@ currentSignal.direction==="UP"
 confidenceEl.textContent =
 "Сила сигнала: "+
 currentSignal.confidence+
-"% • не вероятность выигрыша";
-
+"% • не вероятность";
 
 enterBtn.disabled=false;
 
-updateAge();
+updateSignalAge();
 
 }
 
 
-function updateAge(){
+function updateSignalAge(){
 
 if(!currentSignal)
 return;
 
-const age =
+const seconds =
 Math.floor(
-(Date.now()-
-currentSignal.time)/1000
+(
+Date.now()-
+currentSignal.time
+)/1000
 );
 
 signalAgeEl.textContent =
 "Сигнал появился "+
-age+
+seconds+
 " сек. назад";
 
 }
 
 
-/* =========================
-   ENTER
-========================= */
+/* =====================================================
+   ENTRY
+===================================================== */
 
 enterBtn.onclick=()=>{
 
@@ -1296,9 +1612,9 @@ cancelBtn.disabled=false;
 };
 
 
-/* =========================
+/* =====================================================
    CANCEL
-========================= */
+===================================================== */
 
 cancelBtn.onclick=()=>{
 
@@ -1316,46 +1632,17 @@ cancelBtn.disabled=true;
 };
 
 
-/* =========================
+/* =====================================================
    TIMER
-========================= */
+===================================================== */
 
-function tickTimer(){
+function updateTimer(){
 
-if(!entry){
-
-if(currentSignal){
-
-const end =
-currentSignal.time+
-timeframe*
-60*
-1000;
+if(entry){
 
 const remaining =
-Math.max(
-0,
-end-Date.now()
-);
-
-timerEl.textContent =
-formatDuration(
-remaining
-);
-
-}else{
-
-timerEl.textContent="—";
-
-}
-
-return;
-
-}
-
-
-const remaining =
-entry.expiry-Date.now();
+entry.expiry-
+Date.now();
 
 
 if(remaining<=0){
@@ -1372,22 +1659,79 @@ formatDuration(
 remaining
 );
 
+return;
+
 }
 
 
-/* =========================
+if(currentSignal){
+
+const end =
+currentSignal.time+
+timeframe*
+60*
+1000;
+
+timerEl.textContent =
+formatDuration(
+Math.max(
+0,
+end-Date.now()
+)
+);
+
+}else{
+
+timerEl.textContent="—";
+
+}
+
+}
+
+
+function formatDuration(ms){
+
+const seconds =
+Math.ceil(
+Math.max(
+0,
+ms
+)/1000
+);
+
+const minutes =
+Math.floor(
+seconds/60
+);
+
+const sec =
+seconds%60;
+
+return(
+String(minutes).padStart(2,"0")
++
+":"
++
+String(sec).padStart(2,"0")
+);
+
+}
+
+
+/* =====================================================
    FINISH
-========================= */
+===================================================== */
 
 function finish(){
 
-if(!entry ||
+if(
+!entry ||
 !Number.isFinite(currentPrice)
 )
 return;
 
 
-const final =
+const finalPrice =
 currentPrice;
 
 let win=false;
@@ -1398,7 +1742,7 @@ entry.direction==="UP"
 ){
 
 win =
-final>
+finalPrice>
 entry.entryPrice;
 
 }
@@ -1409,7 +1753,7 @@ entry.direction==="DOWN"
 ){
 
 win =
-final<
+finalPrice<
 entry.entryPrice;
 
 }
@@ -1432,8 +1776,7 @@ entry.signalPrice,
 entryPrice:
 entry.entryPrice,
 
-finalPrice:
-final,
+finalPrice,
 
 result:
 win
@@ -1455,7 +1798,7 @@ else
 losses++;
 
 
-save();
+saveHistory();
 
 updateStats();
 
@@ -1466,6 +1809,7 @@ resultEl.textContent =
 win
 ?"WIN"
 :"LOSS";
+
 
 resultEl.className =
 "result "+
@@ -1494,42 +1838,15 @@ showWait,
 }
 
 
-/* =========================
-   FORMAT
-========================= */
-
-function formatDuration(ms){
-
-const total =
-Math.ceil(
-Math.max(0,ms)/1000
-);
-
-const min =
-Math.floor(total/60);
-
-const sec =
-total%60;
-
-return(
-String(min).padStart(2,"0")
-+
-":"
-+
-String(sec).padStart(2,"0")
-);
-
-}
-
-
-/* =========================
+/* =====================================================
    STATS
-========================= */
+===================================================== */
 
 function updateStats(){
 
 const total =
 wins+losses;
+
 
 document.getElementById(
 "total"
@@ -1547,17 +1864,19 @@ document.getElementById(
 "accuracy"
 ).textContent =
 total
-?Math.round(
+?
+Math.round(
 wins/total*100
 )+"%"
-:"0%";
+:
+"0%";
 
 }
 
 
-/* =========================
+/* =====================================================
    HISTORY
-========================= */
+===================================================== */
 
 function renderHistory(){
 
@@ -1583,14 +1902,20 @@ history
 .map(
 x=>`
 
-<div class="historyRow">
+<div class="row">
 
 <div>
-${new Date(x.time)
-.toLocaleTimeString("ru-RU")}
+
+${new Date(
+x.time
+).toLocaleTimeString("ru-RU")}
+
 •
+
 ${x.direction}
+
 •
+
 ${x.timeframe} мин
 
 <b class="${
@@ -1603,7 +1928,7 @@ ${x.result}
 
 </div>
 
-<div class="historyBottom">
+<div class="row2">
 
 Сигнал:
 ${x.signalPrice.toFixed(2)}
@@ -1625,9 +1950,9 @@ ${x.finalPrice.toFixed(2)}
 }
 
 
-/* =========================
-   TIMEFRAME BUTTONS
-========================= */
+/* =====================================================
+   TIMEFRAME
+===================================================== */
 
 document
 .querySelectorAll(".tf")
@@ -1647,12 +1972,15 @@ b=>
 b.classList.remove("active")
 );
 
+
 button.classList.add("active");
+
 
 timeframe =
 Number(
 button.dataset.min
 );
+
 
 currentSignal=null;
 
@@ -1664,23 +1992,31 @@ showWait();
 );
 
 
-/* =========================
+/* =====================================================
    LOOP
-========================= */
+===================================================== */
 
 setInterval(
-tickTimer,
+updateTimer,
 250
 );
 
+setInterval(
+updateSignalAge,
+1000
+);
 
-/* =========================
+
+/* =====================================================
    START
-========================= */
+===================================================== */
 
-load();
+symbolEl.textContent =
+SYMBOL;
 
-resize();
+loadHistory();
+
+resizeCanvas();
 
 connect();
 
