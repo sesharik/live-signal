@@ -2,169 +2,225 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Live Signal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LIVE SIGNAL</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  background:#09090c;
-  color:#fff;
+  padding:14px;
+  background:#08080b;
+  color:#f5f5f7;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  padding:16px;
 }
 
 .app{
-  max-width:700px;
+  width:100%;
+  max-width:760px;
   margin:auto;
 }
 
 h1{
-  margin:0;
+  margin:4px 0 2px;
   font-size:28px;
+  letter-spacing:-.5px;
 }
 
-.status{
-  color:#888;
-  font-size:13px;
-  margin:5px 0 16px;
+.muted{
+  color:#85858d;
+  font-size:12px;
 }
 
 .card{
-  background:#131318;
-  border:1px solid #28282f;
+  background:#121217;
+  border:1px solid #25252c;
   border-radius:18px;
   padding:14px;
-  margin-bottom:12px;
+  margin-top:12px;
 }
 
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:12px;
+  gap:10px;
 }
 
 .symbol{
-  font-weight:600;
   font-size:14px;
+  font-weight:700;
 }
 
 .price{
-  font-family:monospace;
-  font-size:18px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:17px;
+}
+
+#status{
+  margin-top:3px;
+  color:#55d889;
 }
 
 canvas{
   width:100%;
   height:300px;
   display:block;
-  background:#0e0e13;
-  border-radius:12px;
+  margin-top:12px;
+  background:#0d0d12;
+  border-radius:13px;
 }
 
-.buttons{
-  display:flex;
+.controls{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin-top:12px;
+  margin-top:10px;
 }
 
 button{
-  flex:1;
+  appearance:none;
   border:1px solid #303039;
-  background:#1b1b22;
+  background:#1b1b21;
   color:#fff;
-  border-radius:10px;
-  padding:12px 5px;
+  border-radius:11px;
+  padding:12px 8px;
   font-size:15px;
+  font-weight:600;
 }
 
 button.active{
   background:#fff;
   color:#000;
+  border-color:#fff;
 }
 
-.signal{
-  margin-top:14px;
-  padding:18px;
-  border-radius:14px;
+button:disabled{
+  opacity:.45;
+}
+
+.signalBox{
+  margin-top:12px;
+  padding:17px;
   background:#19191f;
+  border-radius:15px;
   text-align:center;
 }
 
-.label{
-  color:#888;
+.caption{
+  color:#85858d;
+  font-size:11px;
+  letter-spacing:.5px;
+}
+
+.signal{
+  margin-top:4px;
+  font-size:36px;
+  font-weight:900;
+}
+
+.wait{color:#a5a5ad}
+.up{color:#58df8b}
+.down{color:#ff6470}
+
+.meta{
+  margin-top:4px;
+  color:#aaa;
   font-size:12px;
-  margin-bottom:5px;
 }
 
-.signalValue{
-  font-size:32px;
-  font-weight:800;
+.bigTimer{
+  margin-top:10px;
+  font-size:28px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 
-.wait{color:#aaa}
-.up{color:#55d889}
-.down{color:#ff5d68}
-
-.confidence{
-  margin-top:5px;
-  color:#888;
-  font-size:13px;
-}
-
-.timer{
+.entryBox{
   margin-top:12px;
-  font-size:25px;
-  font-family:monospace;
+  padding-top:12px;
+  border-top:1px solid #292930;
+}
+
+.entryPrice{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:18px;
+  margin:5px 0;
+}
+
+.action{
+  width:100%;
+  margin-top:9px;
+  background:#fff;
+  color:#000;
+}
+
+.action.secondary{
+  background:#1b1b21;
+  color:#fff;
 }
 
 .result{
   margin-top:10px;
-  font-weight:700;
-  font-size:18px;
+  font-size:20px;
+  font-weight:800;
 }
+
+.win{color:#58df8b}
+.loss{color:#ff6470}
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:10px;
 }
 
 .stat{
   background:#19191f;
   border-radius:12px;
-  padding:12px 6px;
+  padding:10px 4px;
   text-align:center;
 }
 
 .stat b{
   display:block;
-  font-size:20px;
+  font-size:18px;
 }
 
 .stat span{
-  color:#888;
-  font-size:11px;
+  color:#85858d;
+  font-size:10px;
 }
 
 .history{
-  max-height:220px;
+  margin-top:8px;
+  max-height:260px;
   overflow:auto;
 }
 
 .row{
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid #24242b;
   padding:9px 2px;
-  font-size:12px;
+  border-bottom:1px solid #25252c;
+  font-size:11px;
 }
 
-.win{color:#55d889}
-.loss{color:#ff5d68}
+.rowTop{
+  display:flex;
+  justify-content:space-between;
+  gap:5px;
+}
+
+.rowBottom{
+  margin-top:3px;
+  color:#85858d;
+}
+
+.warning{
+  color:#aaa;
+  font-size:11px;
+  line-height:1.45;
+}
 </style>
 </head>
 
@@ -173,305 +229,726 @@ button.active{
 <div class="app">
 
 <h1>LIVE SIGNAL</h1>
-
-<div class="status" id="status">
-Подключение к Deriv...
-</div>
+<div id="status" class="muted">Подключение...</div>
 
 <div class="card">
 
-<div class="top">
-<div class="symbol">Volatility 100 Index</div>
-<div class="price" id="price">—</div>
-</div>
+  <div class="top">
+    <div class="symbol">Volatility 100 Index</div>
+    <div id="price" class="price">—</div>
+  </div>
 
-<canvas id="chart"></canvas>
+  <canvas id="chart"></canvas>
 
-<div class="buttons">
-<button class="active" data-time="1">1 мин</button>
-<button data-time="5">5 мин</button>
-<button data-time="10">10 мин</button>
-</div>
-
-<div class="signal">
-
-<div class="label">ДЕМО-ПРОГНОЗ</div>
-
-<div id="signal" class="signalValue wait">
-WAIT
-</div>
-
-<div id="confidence" class="confidence">
-Ожидание данных
-</div>
-
-<div id="timer" class="timer">
-—
-</div>
-
-<div id="result" class="result">
-</div>
-
-</div>
+  <div class="controls">
+    <button class="tf active" data-minutes="1">1 мин</button>
+    <button class="tf" data-minutes="5">5 мин</button>
+    <button class="tf" data-minutes="10">10 мин</button>
+  </div>
 
 </div>
 
 <div class="card">
 
-<div class="label">СТАТИСТИКА</div>
+  <div class="signalBox">
 
-<div class="stats">
+    <div class="caption">ТЕКУЩИЙ ДЕМО-ПРОГНОЗ</div>
 
-<div class="stat">
-<b id="total">0</b>
-<span>Сигналов</span>
-</div>
+    <div id="signal" class="signal wait">WAIT</div>
 
-<div class="stat">
-<b id="wins">0</b>
-<span>WIN</span>
-</div>
+    <div id="confidence" class="meta">
+      Собираем данные...
+    </div>
 
-<div class="stat">
-<b id="accuracy">0%</b>
-<span>Точность</span>
-</div>
+    <div id="signalAge" class="meta"></div>
 
-</div>
+    <div id="timer" class="bigTimer">—</div>
+
+    <div id="entryBox" class="entryBox">
+
+      <div class="caption">
+        ВИРТУАЛЬНЫЙ ВХОД
+      </div>
+
+      <div id="entryPrice" class="entryPrice">
+        Не зафиксирован
+      </div>
+
+      <button id="enterBtn" class="action" disabled>
+        Я вошла сейчас
+      </button>
+
+      <button id="cancelBtn" class="action secondary" disabled>
+        Отменить виртуальный вход
+      </button>
+
+      <div id="result" class="result"></div>
+
+    </div>
+
+  </div>
 
 </div>
 
 <div class="card">
 
-<div class="label">ИСТОРИЯ</div>
+  <div class="caption">СТАТИСТИКА</div>
 
-<div id="history" class="history">
-Пока нет завершённых прогнозов.
+  <div class="stats">
+
+    <div class="stat">
+      <b id="total">0</b>
+      <span>Завершено</span>
+    </div>
+
+    <div class="stat">
+      <b id="wins">0</b>
+      <span>WIN</span>
+    </div>
+
+    <div class="stat">
+      <b id="losses">0</b>
+      <span>LOSS</span>
+    </div>
+
+    <div class="stat">
+      <b id="accuracy">0%</b>
+      <span>Точность</span>
+    </div>
+
+  </div>
+
 </div>
 
+<div class="card">
+
+  <div class="caption">ИСТОРИЯ ВИРТУАЛЬНЫХ ВХОДОВ</div>
+
+  <div id="history" class="history">
+    Пока нет завершённых входов.
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="warning">
+    ДЕМО-РЕЖИМ. Этот экран получает рыночные данные и тестирует
+    модель на виртуальных входах. Он не подключается к торговому
+    аккаунту и не отправляет сделки.
+  </div>
 </div>
 
 </div>
 
 <script>
 
+"use strict";
+
+/* =========================
+   CONFIG
+========================= */
+
 const APP_ID = 1089;
 const SYMBOL = "R_100";
 
-const canvas = document.getElementById("chart");
-const ctx = canvas.getContext("2d");
+const MAX_TICKS = 1200;
+const MIN_TICKS_FOR_SIGNAL = 80;
 
-const statusEl = document.getElementById("status");
-const priceEl = document.getElementById("price");
-const signalEl = document.getElementById("signal");
-const confidenceEl = document.getElementById("confidence");
-const timerEl = document.getElementById("timer");
-const resultEl = document.getElementById("result");
-
-let socket;
-let prices = [];
+const SIGNAL_COOLDOWN_MS = 5000;
 
 let selectedMinutes = 1;
 
-let activePrediction = null;
-let timerInterval = null;
+let ws = null;
+let reconnectTimer = null;
 
-let total = 0;
+let prices = [];
+let times = [];
+
+let currentPrice = null;
+let lastTickTime = 0;
+
+let serverOffsetMs = 0;
+
+let currentSignal = null;
+let virtualEntry = null;
+
+let signalCooldownUntil = 0;
+
+let history = [];
+
 let wins = 0;
+let losses = 0;
 
-const history = [];
+
+/* =========================
+   DOM
+========================= */
+
+const statusEl =
+  document.getElementById("status");
+
+const priceEl =
+  document.getElementById("price");
+
+const signalEl =
+  document.getElementById("signal");
+
+const confidenceEl =
+  document.getElementById("confidence");
+
+const signalAgeEl =
+  document.getElementById("signalAge");
+
+const timerEl =
+  document.getElementById("timer");
+
+const entryPriceEl =
+  document.getElementById("entryPrice");
+
+const enterBtn =
+  document.getElementById("enterBtn");
+
+const cancelBtn =
+  document.getElementById("cancelBtn");
+
+const resultEl =
+  document.getElementById("result");
+
+const canvas =
+  document.getElementById("chart");
+
+const ctx =
+  canvas.getContext("2d");
 
 
-/* -------------------------
+/* =========================
+   LOCAL STORAGE
+========================= */
+
+function saveState(){
+
+  localStorage.setItem(
+    "liveSignalHistory",
+    JSON.stringify(history)
+  );
+
+}
+
+
+function loadState(){
+
+  try{
+
+    const saved =
+      localStorage.getItem(
+        "liveSignalHistory"
+      );
+
+    if(saved){
+
+      history =
+        JSON.parse(saved);
+
+      wins =
+        history.filter(
+          x => x.result === "WIN"
+        ).length;
+
+      losses =
+        history.filter(
+          x => x.result === "LOSS"
+        ).length;
+
+    }
+
+  }catch(e){
+
+    history = [];
+    wins = 0;
+    losses = 0;
+
+  }
+
+  renderHistory();
+  updateStats();
+
+}
+
+loadState();
+
+
+/* =========================
    CANVAS
-------------------------- */
+========================= */
 
 function resizeCanvas(){
 
-  const ratio = window.devicePixelRatio || 1;
+  const ratio =
+    window.devicePixelRatio || 1;
 
-  canvas.width = canvas.clientWidth * ratio;
-  canvas.height = canvas.clientHeight * ratio;
+  canvas.width =
+    Math.floor(
+      canvas.clientWidth * ratio
+    );
 
-  ctx.setTransform(ratio,0,0,ratio,0,0);
+  canvas.height =
+    Math.floor(
+      canvas.clientHeight * ratio
+    );
+
+  ctx.setTransform(
+    ratio,
+    0,
+    0,
+    ratio,
+    0,
+    0
+  );
 
   drawChart();
+
 }
 
-window.addEventListener("resize",resizeCanvas);
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
 
 
 function drawChart(){
 
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
+  const width =
+    canvas.clientWidth;
 
-  ctx.clearRect(0,0,width,height);
+  const height =
+    canvas.clientHeight;
 
-  if(prices.length < 2) return;
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
 
-  const visible = prices.slice(-120);
+  if(prices.length < 2)
+    return;
 
-  let min = Math.min(...visible);
-  let max = Math.max(...visible);
+  const visible =
+    prices.slice(-220);
+
+  let min =
+    Math.min(...visible);
+
+  let max =
+    Math.max(...visible);
 
   if(max === min){
+
     max += 0.0001;
     min -= 0.0001;
+
   }
 
-  const padding = 18;
+  const pad = 16;
+
+  /* grid */
+
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#1d1d24";
+
+  for(let i=1;i<5;i++){
+
+    const y =
+      i/5 * height;
+
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(width,y);
+    ctx.stroke();
+
+  }
+
+  /* price line */
 
   ctx.beginPath();
 
-  visible.forEach((value,i)=>{
+  visible.forEach(
+    (value,index)=>{
 
-    const x =
-      padding +
-      i/(visible.length-1) *
-      (width-padding*2);
+      const x =
+        pad +
+        index /
+        Math.max(
+          1,
+          visible.length-1
+        ) *
+        (width-pad*2);
 
-    const y =
-      height-padding -
-      (value-min)/(max-min) *
-      (height-padding*2);
+      const y =
+        height-pad -
+        (
+          (value-min) /
+          (max-min)
+        ) *
+        (height-pad*2);
 
-    if(i===0)
-      ctx.moveTo(x,y);
-    else
-      ctx.lineTo(x,y);
+      if(index===0)
+        ctx.moveTo(x,y);
+      else
+        ctx.lineTo(x,y);
 
-  });
+    }
+  );
 
-  ctx.strokeStyle="#ffffff";
-  ctx.lineWidth=2;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 2;
   ctx.stroke();
+
+  /* current price */
+
+  const last =
+    visible[visible.length-1];
+
+  const x = width-pad;
+
+  const y =
+    height-pad -
+    (
+      (last-min) /
+      (max-min)
+    ) *
+    (height-pad*2);
+
+  ctx.beginPath();
+  ctx.arc(x,y,4,0,Math.PI*2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
 
 }
 
 
-/* -------------------------
-   DERIV
-------------------------- */
+/* =========================
+   DERIV CONNECTION
+========================= */
 
 function connect(){
 
-  socket = new WebSocket(
-    `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`
-  );
+  clearTimeout(reconnectTimer);
 
-  socket.onopen = ()=>{
+  if(ws){
+
+    try{
+      ws.close();
+    }catch(e){}
+
+  }
+
+  statusEl.textContent =
+    "Подключение к Deriv...";
+
+  ws =
+    new WebSocket(
+      `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`
+    );
+
+  ws.onopen = ()=>{
 
     statusEl.textContent =
-      "Подключено • получаем историю";
+      "Подключено • синхронизация";
 
-    socket.send(JSON.stringify({
+    /* server clock */
+
+    ws.send(JSON.stringify({
+      time:1,
+      req_id:1
+    }));
+
+    /* history */
+
+    ws.send(JSON.stringify({
       ticks_history:SYMBOL,
-      count:300,
       end:"latest",
-      style:"ticks"
+      count:MAX_TICKS,
+      style:"ticks",
+      subscribe:0,
+      req_id:2
+    }));
+
+    /* live */
+
+    ws.send(JSON.stringify({
+      ticks:SYMBOL,
+      subscribe:1,
+      req_id:3
     }));
 
   };
 
 
-  socket.onmessage = event=>{
+  ws.onmessage = event=>{
 
-    const data = JSON.parse(event.data);
+    let data;
+
+    try{
+      data = JSON.parse(event.data);
+    }catch(e){
+      return;
+    }
 
 
-    if(data.history){
+    /* server time */
 
-      prices =
-        data.history.prices.map(Number);
+    if(data.msg_type === "time"){
 
-      drawChart();
+      if(data.time){
 
-      socket.send(JSON.stringify({
-        ticks:SYMBOL,
-        subscribe:1
-      }));
+        serverOffsetMs =
+          Number(data.time)*1000 -
+          Date.now();
 
-      statusEl.textContent =
-        "Подключено • живые данные";
+      }
 
       return;
     }
 
 
-    if(data.tick){
+    /* history */
 
-      const price =
-        Number(data.tick.quote);
+    if(
+      data.msg_type === "history" &&
+      data.history
+    ){
 
-      prices.push(price);
+      const p =
+        data.history.prices || [];
 
-      if(prices.length > 500)
-        prices.shift();
+      const t =
+        data.history.times || [];
 
-      priceEl.textContent =
-        price.toFixed(2);
+      prices =
+        p.map(Number);
+
+      times =
+        t.map(Number);
+
+      if(prices.length > MAX_TICKS){
+
+        prices =
+          prices.slice(-MAX_TICKS);
+
+        times =
+          times.slice(-MAX_TICKS);
+
+      }
+
+      if(prices.length){
+
+        currentPrice =
+          prices[prices.length-1];
+
+        priceEl.textContent =
+          formatPrice(currentPrice);
+
+      }
+
+      statusEl.textContent =
+        "Подключено • живые данные";
 
       drawChart();
 
-      analyze();
+      return;
+    }
+
+
+    /* live tick */
+
+    if(data.msg_type === "tick" && data.tick){
+
+      const quote =
+        Number(data.tick.quote);
+
+      const epoch =
+        Number(data.tick.epoch);
+
+      if(!Number.isFinite(quote))
+        return;
+
+      currentPrice = quote;
+      lastTickTime = epoch * 1000;
+
+      prices.push(quote);
+      times.push(epoch);
+
+      if(prices.length > MAX_TICKS){
+
+        prices.shift();
+        times.shift();
+
+      }
+
+      priceEl.textContent =
+        formatPrice(quote);
+
+      drawChart();
+
+      evaluateSignal();
+
+      return;
+    }
+
+
+    if(data.error){
+
+      statusEl.textContent =
+        "Ошибка Deriv: " +
+        (
+          data.error.message ||
+          "неизвестная ошибка"
+        );
 
     }
 
   };
 
 
-  socket.onerror = ()=>{
+  ws.onerror = ()=>{
 
     statusEl.textContent =
-      "Ошибка подключения";
+      "Ошибка соединения • переподключение";
 
   };
 
 
-  socket.onclose = ()=>{
+  ws.onclose = ()=>{
 
     statusEl.textContent =
-      "Соединение потеряно • переподключение...";
+      "Соединение потеряно • переподключение";
 
-    setTimeout(connect,3000);
+    reconnectTimer =
+      setTimeout(
+        connect,
+        3000
+      );
 
   };
 
 }
 
 
-/* -------------------------
-   SIMPLE DEMO MODEL
-------------------------- */
+/* =========================
+   HELPERS
+========================= */
+
+function formatPrice(value){
+
+  if(!Number.isFinite(value))
+    return "—";
+
+  return value.toFixed(2);
+
+}
+
+
+function nowServerMs(){
+
+  return Date.now() + serverOffsetMs;
+
+}
+
+
+/* =========================
+   SIGNAL MODEL
+========================= */
 
 function average(arr){
 
-  if(!arr.length) return 0;
+  if(!arr.length)
+    return 0;
 
-  return arr.reduce((a,b)=>a+b,0)/arr.length;
+  return arr.reduce(
+    (a,b)=>a+b,
+    0
+  ) / arr.length;
 
 }
 
 
-function analyze(){
+function slope(arr){
 
-  if(prices.length < 40)
-    return;
+  if(arr.length < 2)
+    return 0;
 
-  /*
-    Это намеренно простая демонстрационная модель.
+  const first = arr[0];
+  const last =
+    arr[arr.length-1];
 
-    Она НЕ утверждает, что знает будущее.
-    Она сравнивает краткосрочное движение
-    с более длинным движением.
-  */
+  return last-first;
+
+}
+
+
+function stddev(arr){
+
+  if(arr.length < 2)
+    return 0;
+
+  const avg =
+    average(arr);
+
+  const variance =
+    average(
+      arr.map(
+        x => (x-avg)*(x-avg)
+      )
+    );
+
+  return Math.sqrt(variance);
+
+}
+
+
+/*
+  Это НЕ "предсказание будущего".
+  Это базовый экспериментальный классификатор.
+
+  Он использует:
+  - короткий тренд
+  - средний тренд
+  - моментум
+  - относительную волатильность
+
+  Если факторы противоречат друг другу,
+  выдаётся WAIT.
+*/
+
+function calculateSignal(){
+
+  if(prices.length < MIN_TICKS_FOR_SIGNAL){
+
+    return {
+      direction:"WAIT",
+      confidence:0
+    };
+
+  }
 
   const short =
-    prices.slice(-8);
+    prices.slice(-12);
 
   const medium =
-    prices.slice(-30);
+    prices.slice(-45);
+
+  const long =
+    prices.slice(-80);
+
+  const shortSlope =
+    slope(short);
+
+  const mediumSlope =
+    slope(medium);
+
+  const longSlope =
+    slope(long);
 
   const shortAvg =
     average(short);
@@ -479,388 +956,767 @@ function analyze(){
   const mediumAvg =
     average(medium);
 
-  const last =
-    prices[prices.length-1];
+  const volatility =
+    stddev(
+      long.map(
+        (p,i)=>
+          i===0
+          ? 0
+          : p-long[i-1]
+      ).slice(1)
+    );
 
-  const previous =
-    prices[prices.length-2];
+  if(!Number.isFinite(volatility))
+    return {
+      direction:"WAIT",
+      confidence:0
+    };
 
-  let direction = "WAIT";
-  let confidence = 0;
 
-  if(
-    shortAvg > mediumAvg &&
-    last > previous
-  ){
+  let score = 0;
 
+
+  /* trend */
+
+  if(shortSlope > 0)
+    score += 2;
+
+  if(shortSlope < 0)
+    score -= 2;
+
+
+  if(mediumSlope > 0)
+    score += 1;
+
+  if(mediumSlope < 0)
+    score -= 1;
+
+
+  if(longSlope > 0)
+    score += 0.5;
+
+  if(longSlope < 0)
+    score -= 0.5;
+
+
+  /* position */
+
+  if(shortAvg > mediumAvg)
+    score += 1;
+
+  if(shortAvg < mediumAvg)
+    score -= 1;
+
+
+  /*
+    Avoid meaningless tiny movements.
+  */
+
+  const movement =
+    Math.abs(shortSlope);
+
+  const meaningful =
+    volatility > 0 &&
+    movement >
+    volatility * 0.35;
+
+
+  if(!meaningful){
+
+    return {
+      direction:"WAIT",
+      confidence:0
+    };
+
+  }
+
+
+  let direction =
+    "WAIT";
+
+  if(score >= 3)
     direction = "UP";
 
-    confidence =
-      Math.min(
-        95,
-        50 +
-        Math.abs(shortAvg-mediumAvg) /
-        Math.max(last,0.0001) *
-        50000
-      );
-
-  }
-  else if(
-    shortAvg < mediumAvg &&
-    last < previous
-  ){
-
+  if(score <= -3)
     direction = "DOWN";
 
-    confidence =
-      Math.min(
-        95,
-        50 +
-        Math.abs(shortAvg-mediumAvg) /
-        Math.max(last,0.0001) *
-        50000
-      );
 
-  }
-  else{
+  if(direction === "WAIT"){
 
-    direction = "WAIT";
+    return {
+      direction:"WAIT",
+      confidence:0
+    };
 
   }
 
 
   /*
-    Сигнал создаётся только если
-    нет другого активного прогноза.
+    confidence is only a model score,
+    NOT probability of winning.
+  */
+
+  const confidence =
+    Math.min(
+      95,
+      Math.round(
+        55 +
+        Math.min(
+          35,
+          Math.abs(score)*6
+        )
+      )
+    );
+
+
+  return {
+    direction,
+    confidence
+  };
+
+}
+
+
+/* =========================
+   SIGNAL CREATION
+========================= */
+
+function evaluateSignal(){
+
+  if(virtualEntry)
+    return;
+
+  const now =
+    nowServerMs();
+
+  if(now < signalCooldownUntil)
+    return;
+
+  const result =
+    calculateSignal();
+
+  if(result.direction === "WAIT"){
+
+    showWait();
+
+    return;
+
+  }
+
+  if(result.confidence < 60){
+
+    showWait();
+
+    return;
+
+  }
+
+
+  /*
+    Do not create another signal
+    every single tick.
   */
 
   if(
-    direction !== "WAIT" &&
-    !activePrediction &&
-    confidence >= 60
+    currentSignal &&
+    currentSignal.direction ===
+      result.direction
   ){
 
-    createPrediction(
-      direction,
-      confidence,
-      last
-    );
+    updateSignalAge();
+
+    return;
 
   }
 
-}
 
+  currentSignal = {
 
-/* -------------------------
-   PREDICTION
-------------------------- */
+    direction:
+      result.direction,
 
-function createPrediction(
-  direction,
-  confidence,
-  entryPrice
-){
+    confidence:
+      result.confidence,
 
-  const duration =
-    selectedMinutes * 60 * 1000;
+    price:
+      currentPrice,
 
-  activePrediction = {
+    serverTime:
+      now,
 
-    direction,
-    confidence,
-    entryPrice,
-    start:Date.now(),
-    end:Date.now()+duration
+    minutes:
+      selectedMinutes
 
   };
 
-  total++;
+  signalCooldownUntil =
+    now +
+    SIGNAL_COOLDOWN_MS;
 
-  updateStats();
-
-  signalEl.textContent =
-    direction;
-
-  signalEl.className =
-    "signalValue " +
-    (direction==="UP" ? "up":"down");
-
-  confidenceEl.textContent =
-    "Уверенность модели: " +
-    Math.round(confidence) +
-    "% • демо";
-
-  resultEl.textContent =
-    "";
-
-  startTimer();
+  renderSignal();
 
 }
 
 
-/* -------------------------
-   TIMER
-------------------------- */
+/* =========================
+   UI SIGNAL
+========================= */
 
-function startTimer(){
+function showWait(){
 
-  clearInterval(timerInterval);
-
-  timerInterval =
-    setInterval(()=>{
-
-      if(!activePrediction){
-
-        clearInterval(timerInterval);
-        return;
-
-      }
-
-      const remaining =
-        activePrediction.end -
-        Date.now();
-
-      if(remaining <= 0){
-
-        finishPrediction();
-
-        return;
-
-      }
-
-      const seconds =
-        Math.ceil(remaining/1000);
-
-      const minutes =
-        Math.floor(seconds/60);
-
-      const sec =
-        seconds % 60;
-
-      timerEl.textContent =
-        String(minutes).padStart(2,"0") +
-        ":" +
-        String(sec).padStart(2,"0");
-
-    },250);
-
-}
-
-
-/* -------------------------
-   RESULT
-------------------------- */
-
-function finishPrediction(){
-
-  clearInterval(timerInterval);
-
-  if(!activePrediction)
+  if(virtualEntry)
     return;
 
-  const prediction =
-    activePrediction;
+  signalEl.textContent =
+    "WAIT";
+
+  signalEl.className =
+    "signal wait";
+
+  confidenceEl.textContent =
+    "Нет достаточно сильного сигнала";
+
+  signalAgeEl.textContent =
+    "";
+
+}
+
+
+function renderSignal(){
+
+  if(!currentSignal)
+    return;
+
+  signalEl.textContent =
+    currentSignal.direction;
+
+  signalEl.className =
+    "signal " +
+    (
+      currentSignal.direction === "UP"
+      ? "up"
+      : "down"
+    );
+
+  confidenceEl.textContent =
+    "Модель: " +
+    currentSignal.confidence +
+    "% • не вероятность выигрыша";
+
+  enterBtn.disabled =
+    false;
+
+  cancelBtn.disabled =
+    true;
+
+  updateSignalAge();
+
+}
+
+
+function updateSignalAge(){
+
+  if(!currentSignal)
+    return;
+
+  const age =
+    Math.max(
+      0,
+      Math.floor(
+        (
+          nowServerMs() -
+          currentSignal.serverTime
+        ) / 1000
+      )
+    );
+
+  signalAgeEl.textContent =
+    "Сигнал активен: " +
+    age +
+    " сек.";
+
+}
+
+
+/* =========================
+   VIRTUAL ENTRY
+========================= */
+
+enterBtn.addEventListener(
+  "click",
+  ()=>{
+
+    if(!currentSignal)
+      return;
+
+    if(!Number.isFinite(currentPrice))
+      return;
+
+    /*
+      ВАЖНО:
+      именно здесь фиксируется
+      фактический виртуальный вход.
+
+      Поэтому задержка пользователя
+      автоматически учитывается.
+    */
+
+    const entryTime =
+      nowServerMs();
+
+    virtualEntry = {
+
+      direction:
+        currentSignal.direction,
+
+      horizonMinutes:
+        currentSignal.minutes,
+
+      signalTime:
+        currentSignal.serverTime,
+
+      signalPrice:
+        currentSignal.price,
+
+      entryTime,
+      entryPrice:
+        currentPrice,
+
+      expiryTime:
+        entryTime +
+        currentSignal.minutes *
+        60 *
+        1000
+
+    };
+
+    entryPriceEl.textContent =
+      formatPrice(
+        virtualEntry.entryPrice
+      );
+
+    resultEl.textContent =
+      "";
+
+    enterBtn.disabled = true;
+    cancelBtn.disabled = false;
+
+    timerEl.textContent =
+      formatDuration(
+        virtualEntry.expiryTime -
+        nowServerMs()
+      );
+
+  }
+);
+
+
+/* =========================
+   CANCEL
+========================= */
+
+cancelBtn.addEventListener(
+  "click",
+  ()=>{
+
+    if(!virtualEntry)
+      return;
+
+    virtualEntry = null;
+
+    entryPriceEl.textContent =
+      "Не зафиксирован";
+
+    resultEl.textContent =
+      "";
+
+    timerEl.textContent =
+      "—";
+
+    cancelBtn.disabled = true;
+
+    signalCooldownUntil =
+      nowServerMs() +
+      1000;
+
+  }
+);
+
+
+/* =========================
+   EXPIRY CHECK
+========================= */
+
+function checkVirtualEntry(){
+
+  updateSignalAge();
+
+  if(!virtualEntry){
+
+    if(currentSignal){
+
+      const remaining =
+        Math.max(
+          0,
+          (
+            currentSignal.serverTime +
+            currentSignal.minutes *
+            60 *
+            1000
+          ) -
+          nowServerMs()
+        );
+
+      timerEl.textContent =
+        "Сигнал • " +
+        formatDuration(remaining);
+
+    }
+
+    return;
+
+  }
+
+
+  const remaining =
+    virtualEntry.expiryTime -
+    nowServerMs();
+
+
+  if(remaining <= 0){
+
+    finishVirtualEntry();
+
+    return;
+
+  }
+
+
+  timerEl.textContent =
+    formatDuration(remaining);
+
+}
+
+
+function formatDuration(ms){
+
+  const total =
+    Math.max(
+      0,
+      Math.ceil(ms/1000)
+    );
+
+  const min =
+    Math.floor(total/60);
+
+  const sec =
+    total % 60;
+
+  return (
+    String(min).padStart(2,"0") +
+    ":" +
+    String(sec).padStart(2,"0")
+  );
+
+}
+
+
+/* =========================
+   FINISH
+========================= */
+
+function finishVirtualEntry(){
+
+  if(!virtualEntry)
+    return;
+
+  if(!Number.isFinite(currentPrice))
+    return;
+
 
   const finalPrice =
-    prices[prices.length-1];
+    currentPrice;
 
   let win = false;
 
-  if(prediction.direction === "UP"){
+
+  if(
+    virtualEntry.direction ===
+    "UP"
+  ){
 
     win =
-      finalPrice > prediction.entryPrice;
+      finalPrice >
+      virtualEntry.entryPrice;
 
   }
 
-  if(prediction.direction === "DOWN"){
+
+  if(
+    virtualEntry.direction ===
+    "DOWN"
+  ){
 
     win =
-      finalPrice < prediction.entryPrice;
+      finalPrice <
+      virtualEntry.entryPrice;
 
   }
 
-  if(win){
 
-    wins++;
+  const record = {
 
-    resultEl.textContent =
-      "WIN";
-
-    resultEl.className =
-      "result win";
-
-  }
-  else{
-
-    resultEl.textContent =
-      "LOSS";
-
-    resultEl.className =
-      "result loss";
-
-  }
-
-  addHistory(
-    prediction,
-    finalPrice,
-    win
-  );
-
-  activePrediction = null;
-
-  timerEl.textContent = "Готово";
-
-  updateStats();
-
-}
-
-
-/* -------------------------
-   HISTORY
-------------------------- */
-
-function addHistory(
-  prediction,
-  finalPrice,
-  win
-){
-
-  history.unshift({
+    id:
+      Date.now(),
 
     direction:
-      prediction.direction,
+      virtualEntry.direction,
 
     minutes:
-      selectedMinutes,
+      virtualEntry.horizonMinutes,
 
-    entry:
-      prediction.entryPrice,
+    signalTime:
+      virtualEntry.signalTime,
 
-    final:
-      finalPrice,
+    signalPrice:
+      virtualEntry.signalPrice,
+
+    entryTime:
+      virtualEntry.entryTime,
+
+    entryPrice:
+      virtualEntry.entryPrice,
+
+    expiryTime:
+      virtualEntry.expiryTime,
+
+    finalPrice,
 
     result:
       win ? "WIN":"LOSS"
 
-  });
+  };
 
-  if(history.length > 20)
-    history.pop();
+
+  history.unshift(record);
+
+  if(history.length > 100)
+    history.length = 100;
+
+
+  if(win)
+    wins++;
+  else
+    losses++;
+
+
+  saveState();
+
+  updateStats();
 
   renderHistory();
+
+
+  resultEl.textContent =
+    win
+    ? "WIN"
+    : "LOSS";
+
+  resultEl.className =
+    "result " +
+    (
+      win
+      ? "win"
+      : "loss"
+    );
+
+
+  timerEl.textContent =
+    "Завершено";
+
+  entryPriceEl.textContent =
+    formatPrice(
+      virtualEntry.entryPrice
+    );
+
+
+  virtualEntry = null;
+
+  cancelBtn.disabled = true;
+
+  currentSignal = null;
+
+  signalCooldownUntil =
+    nowServerMs() +
+    3000;
+
+
+  setTimeout(
+    showWait,
+    1500
+  );
 
 }
 
 
+/* =========================
+   STATS
+========================= */
+
+function updateStats(){
+
+  const total =
+    wins + losses;
+
+  document.getElementById(
+    "total"
+  ).textContent = total;
+
+  document.getElementById(
+    "wins"
+  ).textContent = wins;
+
+  document.getElementById(
+    "losses"
+  ).textContent = losses;
+
+  document.getElementById(
+    "accuracy"
+  ).textContent =
+    total
+    ? Math.round(
+        wins/total*100
+      ) + "%"
+    : "0%";
+
+}
+
+
+/* =========================
+   HISTORY UI
+========================= */
+
 function renderHistory(){
 
   const container =
-    document.getElementById("history");
+    document.getElementById(
+      "history"
+    );
 
   if(!history.length){
 
     container.textContent =
-      "Пока нет завершённых прогнозов.";
+      "Пока нет завершённых входов.";
 
     return;
 
   }
 
+
   container.innerHTML =
-    history.map(item=>`
+    history
+    .slice(0,50)
+    .map(item=>{
 
-      <div class="row">
+      const date =
+        new Date(
+          item.entryTime
+        );
 
-        <span>
-          ${item.direction}
-          • ${item.minutes} мин
-        </span>
+      const time =
+        date.toLocaleTimeString(
+          "ru-RU",
+          {
+            hour:"2-digit",
+            minute:"2-digit",
+            second:"2-digit"
+          }
+        );
 
-        <span>
-          ${item.entry.toFixed(2)}
-          →
-          ${item.final.toFixed(2)}
-        </span>
+      return `
 
-        <b class="${item.result==="WIN"?"win":"loss"}">
-          ${item.result}
-        </b>
+        <div class="row">
 
-      </div>
+          <div class="rowTop">
 
-    `).join("");
+            <span>
+              ${time}
+              •
+              ${item.direction}
+              •
+              ${item.minutes} мин
+            </span>
+
+            <b class="${
+              item.result === "WIN"
+              ? "win"
+              : "loss"
+            }">
+              ${item.result}
+            </b>
+
+          </div>
+
+          <div class="rowBottom">
+
+            сигнал:
+            ${formatPrice(item.signalPrice)}
+            →
+
+            вход:
+            ${formatPrice(item.entryPrice)}
+            →
+
+            конец:
+            ${formatPrice(item.finalPrice)}
+
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
 
 }
 
 
-/* -------------------------
-   STATS
-------------------------- */
-
-function updateStats(){
-
-  document.getElementById("total")
-    .textContent = total;
-
-  document.getElementById("wins")
-    .textContent = wins;
-
-  const finished =
-    history.length;
-
-  const accuracy =
-    finished ?
-    Math.round(wins/finished*100) :
-    0;
-
-  document.getElementById("accuracy")
-    .textContent =
-      accuracy + "%";
-
-}
-
-
-/* -------------------------
-   TIME BUTTONS
-------------------------- */
+/* =========================
+   TIMEFRAME BUTTONS
+========================= */
 
 document
-.querySelectorAll("button")
+.querySelectorAll(".tf")
 .forEach(button=>{
 
   button.addEventListener(
     "click",
     ()=>{
 
-      if(activePrediction)
+      if(virtualEntry)
         return;
 
       document
-      .querySelectorAll("button")
-      .forEach(b =>
+      .querySelectorAll(".tf")
+      .forEach(
+        b =>
         b.classList.remove("active")
       );
 
       button.classList.add("active");
 
       selectedMinutes =
-        Number(button.dataset.time);
+        Number(
+          button.dataset.minutes
+        );
 
-      signalEl.textContent =
-        "WAIT";
+      currentSignal = null;
 
-      signalEl.className =
-        "signalValue wait";
+      signalCooldownUntil =
+        nowServerMs();
 
-      confidenceEl.textContent =
-        "Ожидание нового прогноза";
-
-      timerEl.textContent =
-        "—";
-
-      resultEl.textContent =
-        "";
+      showWait();
 
     }
   );
@@ -868,9 +1724,19 @@ document
 });
 
 
-/* -------------------------
+/* =========================
+   MAIN TIMER
+========================= */
+
+setInterval(
+  checkVirtualEntry,
+  250
+);
+
+
+/* =========================
    START
-------------------------- */
+========================= */
 
 resizeCanvas();
 connect();
