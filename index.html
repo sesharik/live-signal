@@ -2,223 +2,202 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVE SIGNAL</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  padding:14px;
-  background:#08080b;
-  color:#f5f5f7;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+    margin:0;
+    background:#08080b;
+    color:#fff;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 .app{
-  width:100%;
-  max-width:800px;
-  margin:auto
+    max-width:850px;
+    margin:auto;
+    padding:16px;
 }
 
 h1{
-  margin:4px 0 2px;
-  font-size:28px
+    margin:0;
+    font-size:28px;
 }
 
-.muted{
-  color:#85858d;
-  font-size:12px
+.status{
+    color:#777;
+    font-size:13px;
+    margin-top:3px;
 }
 
 .card{
-  background:#121217;
-  border:1px solid #25252c;
-  border-radius:18px;
-  padding:14px;
-  margin-top:12px
+    background:#121217;
+    border:1px solid #27272e;
+    border-radius:18px;
+    padding:15px;
+    margin-top:13px;
 }
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-.symbol{
-  font-size:14px;
-  font-weight:700
+.name{
+    font-weight:700;
+}
+
+.code{
+    color:#777;
+    font-size:12px;
+    margin-top:3px;
 }
 
 .price{
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:17px
-}
-
-#status{
-  margin-top:3px;
-  color:#55d889
+    font-family:monospace;
+    font-size:18px;
 }
 
 canvas{
-  width:100%;
-  height:310px;
-  display:block;
-  margin-top:12px;
-  background:#0d0d12;
-  border-radius:13px
+    width:100%;
+    height:320px;
+    background:#0d0d12;
+    border-radius:13px;
+    margin-top:12px;
 }
 
-.controls{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:10px
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:10px;
 }
 
 button{
-  appearance:none;
-  border:1px solid #303039;
-  background:#1b1b21;
-  color:#fff;
-  border-radius:11px;
-  padding:12px 8px;
-  font-size:15px;
-  font-weight:600
+    border:1px solid #303038;
+    background:#1b1b21;
+    color:#fff;
+    border-radius:11px;
+    padding:13px 5px;
+    font-size:14px;
+    font-weight:700;
 }
 
 button.active{
-  background:#fff;
-  color:#000;
-  border-color:#fff
+    background:#fff;
+    color:#000;
 }
 
 button:disabled{
-  opacity:.45
+    opacity:.4;
 }
 
 .signalBox{
-  margin-top:12px;
-  padding:17px;
-  background:#19191f;
-  border-radius:15px;
-  text-align:center
+    text-align:center;
+    background:#19191f;
+    border-radius:15px;
+    padding:18px;
 }
 
 .caption{
-  color:#85858d;
-  font-size:11px;
-  letter-spacing:.5px
+    color:#777;
+    font-size:11px;
+    letter-spacing:.5px;
 }
 
 .signal{
-  margin-top:4px;
-  font-size:38px;
-  font-weight:900
+    font-size:42px;
+    font-weight:900;
+    margin-top:4px;
 }
 
-.wait{color:#a5a5ad}
-.up{color:#58df8b}
-.down{color:#ff6470}
+.wait{color:#aaa}
+.up{color:#54dc89}
+.down{color:#ff6570}
 
-.meta{
-  margin-top:5px;
-  color:#aaa;
-  font-size:12px
+.confidence{
+    color:#999;
+    font-size:12px;
 }
 
-.bigTimer{
-  margin-top:10px;
-  font-size:28px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace
+.timer{
+    font-family:monospace;
+    font-size:28px;
+    margin-top:8px;
 }
 
-.entryBox{
-  margin-top:14px;
-  padding-top:13px;
-  border-top:1px solid #292930
+.entry{
+    border-top:1px solid #292930;
+    margin-top:15px;
+    padding-top:15px;
 }
 
 .entryPrice{
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:18px;
-  margin:6px 0
+    font-family:monospace;
+    font-size:19px;
+    margin:6px 0;
 }
 
 .action{
-  width:100%;
-  margin-top:9px;
-  background:#fff;
-  color:#000
-}
-
-.action.secondary{
-  background:#1b1b21;
-  color:#fff
+    width:100%;
+    margin-top:8px;
 }
 
 .result{
-  margin-top:10px;
-  font-size:21px;
-  font-weight:800
+    font-size:23px;
+    font-weight:900;
+    margin-top:10px;
 }
 
-.win{color:#58df8b}
-.loss{color:#ff6470}
+.win{color:#54dc89}
+.loss{color:#ff6570}
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-  margin-top:10px
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
 }
 
 .stat{
-  background:#19191f;
-  border-radius:12px;
-  padding:10px 4px;
-  text-align:center
+    background:#19191f;
+    border-radius:12px;
+    text-align:center;
+    padding:10px 3px;
 }
 
 .stat b{
-  display:block;
-  font-size:18px
+    display:block;
+    font-size:19px;
 }
 
 .stat span{
-  color:#85858d;
-  font-size:10px
+    color:#777;
+    font-size:10px;
 }
 
 .history{
-  margin-top:8px;
-  max-height:280px;
-  overflow:auto
+    max-height:300px;
+    overflow:auto;
 }
 
-.row{
-  padding:9px 2px;
-  border-bottom:1px solid #25252c;
-  font-size:11px
+.historyRow{
+    border-bottom:1px solid #27272e;
+    padding:9px 2px;
+    font-size:11px;
 }
 
-.rowTop{
-  display:flex;
-  justify-content:space-between;
-  gap:5px
-}
-
-.rowBottom{
-  margin-top:3px;
-  color:#85858d
+.historyBottom{
+    color:#777;
+    margin-top:3px;
 }
 
 .info{
-  color:#aaa;
-  font-size:11px;
-  line-height:1.5
+    color:#888;
+    font-size:11px;
+    line-height:1.5;
 }
 </style>
 </head>
@@ -229,20 +208,21 @@ button:disabled{
 
 <h1>LIVE SIGNAL</h1>
 
-<div id="status" class="muted">
+<div id="status" class="status">
 Подключение к Deriv...
 </div>
 
+
 <div class="card">
 
-<div class="top">
+<div class="header">
 
 <div>
-<div class="symbol">
+<div class="name">
 Volatility 100 Index
 </div>
 
-<div id="symbolCode" class="muted">
+<div id="symbol" class="code">
 поиск инструмента...
 </div>
 </div>
@@ -255,17 +235,17 @@ Volatility 100 Index
 
 <canvas id="chart"></canvas>
 
-<div class="controls">
+<div class="buttons">
 
-<button class="tf active" data-minutes="1">
+<button class="tf active" data-min="1">
 1 МИН
 </button>
 
-<button class="tf" data-minutes="5">
+<button class="tf" data-min="5">
 5 МИН
 </button>
 
-<button class="tf" data-minutes="10">
+<button class="tf" data-min="10">
 10 МИН
 </button>
 
@@ -286,37 +266,37 @@ Volatility 100 Index
 WAIT
 </div>
 
-<div id="confidence" class="meta">
-Собираем рыночные данные...
+<div id="confidence" class="confidence">
+Собираем данные...
 </div>
 
-<div id="signalAge" class="meta">
+<div id="signalAge" class="confidence">
 </div>
 
-<div id="timer" class="bigTimer">
+<div id="timer" class="timer">
 —
 </div>
 
-<div class="entryBox">
+
+<div class="entry">
 
 <div class="caption">
-ФАКТИЧЕСКИЙ ВИРТУАЛЬНЫЙ ВХОД
+ВИРТУАЛЬНЫЙ ВХОД
 </div>
 
 <div id="entryPrice" class="entryPrice">
 Не зафиксирован
 </div>
 
-<button id="enterBtn" class="action" disabled>
+<button id="enter" class="action" disabled>
 Я ВОШЛА СЕЙЧАС
 </button>
 
-<button id="cancelBtn" class="action secondary" disabled>
+<button id="cancel" class="action" disabled>
 ОТМЕНИТЬ
 </button>
 
-<div id="result" class="result">
-</div>
+<div id="result" class="result"></div>
 
 </div>
 
@@ -330,6 +310,8 @@ WAIT
 <div class="caption">
 СТАТИСТИКА ДЕМО
 </div>
+
+<br>
 
 <div class="stats">
 
@@ -364,6 +346,8 @@ WAIT
 ИСТОРИЯ
 </div>
 
+<br>
+
 <div id="history" class="history">
 Пока нет завершённых входов.
 </div>
@@ -377,16 +361,15 @@ WAIT
 
 <b>ДЕМО-РЕЖИМ</b><br><br>
 
-Сайт получает реальные рыночные данные Deriv,
-но не подключается к торговому аккаунту и
-не отправляет сделки.
+Приложение получает публичные рыночные данные.
+Оно не подключается к торговому аккаунту,
+не получает баланс и не отправляет сделки.
 
-Кнопка «Я вошла сейчас» только фиксирует
-виртуальную цену в момент твоего нажатия.
+«Я ВОШЛА СЕЙЧАС» только фиксирует текущую
+рыночную цену для виртуального теста.
 
-Результат считается от фактического момента
-виртуального входа, поэтому задержка между
-сигналом и твоим нажатием учитывается.
+Результат рассчитывается после выбранного
+времени.
 
 </div>
 
@@ -401,39 +384,32 @@ WAIT
 
 
 /* =========================
-   CONFIG
+   НАСТРОЙКИ
 ========================= */
 
 const APP_ID = 1089;
 
-const TARGET_NAME =
-"volatility 100 index";
+const SYMBOL_NAME = "Volatility 100 Index";
 
-const MAX_TICKS = 1500;
+const MAX_POINTS = 1200;
 
-const MIN_DATA = 100;
-
-let SYMBOL = null;
-
-let selectedMinutes = 1;
+let SYMBOL = "1HZ100V";
 
 let ws = null;
 
 let reconnectTimer = null;
 
-let currentPrice = null;
-
 let prices = [];
 
 let times = [];
 
-let serverOffset = 0;
+let currentPrice = null;
+
+let timeframe = 1;
 
 let currentSignal = null;
 
-let virtualEntry = null;
-
-let signalCooldown = 0;
+let entry = null;
 
 let history = [];
 
@@ -443,17 +419,17 @@ let losses = 0;
 
 
 /* =========================
-   DOM
+   ELEMENTS
 ========================= */
 
-const statusEl =
+const status =
 document.getElementById("status");
+
+const symbolEl =
+document.getElementById("symbol");
 
 const priceEl =
 document.getElementById("price");
-
-const symbolCodeEl =
-document.getElementById("symbolCode");
 
 const signalEl =
 document.getElementById("signal");
@@ -471,10 +447,10 @@ const entryPriceEl =
 document.getElementById("entryPrice");
 
 const enterBtn =
-document.getElementById("enterBtn");
+document.getElementById("enter");
 
 const cancelBtn =
-document.getElementById("cancelBtn");
+document.getElementById("cancel");
 
 const resultEl =
 document.getElementById("result");
@@ -490,25 +466,21 @@ canvas.getContext("2d");
    STORAGE
 ========================= */
 
-function loadHistory(){
+function load(){
 
 try{
 
-const saved =
+const x =
 localStorage.getItem(
 "liveSignalHistory"
 );
 
-if(saved){
-
-history =
-JSON.parse(saved);
-
-}
+if(x)
+history=JSON.parse(x);
 
 }catch(e){
 
-history = [];
+history=[];
 
 }
 
@@ -529,7 +501,7 @@ renderHistory();
 }
 
 
-function saveHistory(){
+function save(){
 
 localStorage.setItem(
 "liveSignalHistory",
@@ -540,63 +512,286 @@ JSON.stringify(history)
 
 
 /* =========================
-   TIME
+   CONNECT
 ========================= */
 
-function now(){
+function connect(){
 
-return Date.now()+serverOffset;
+clearTimeout(reconnectTimer);
 
-}
-
-
-function formatPrice(value){
-
-if(!Number.isFinite(value))
-return "—";
-
-return value.toFixed(2);
-
-}
+status.textContent =
+"Подключение к Deriv...";
 
 
-function formatTime(ms){
-
-return new Date(ms)
-.toLocaleTimeString(
-"ru-RU",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
+ws =
+new WebSocket(
+"wss://ws.binaryws.com/websockets/v3"
 );
 
 
+ws.onopen=()=>{
+
+status.textContent =
+"Deriv подключён • поиск Volatility 100";
+
+
+/*
+   Получаем актуальные символы.
+*/
+
+ws.send(
+JSON.stringify({
+
+active_symbols:"brief",
+
+product_type:"basic",
+
+req_id:1
+
+})
+);
+
+};
+
+
+ws.onmessage=(event)=>{
+
+let data;
+
+try{
+
+data=JSON.parse(event.data);
+
+}catch(e){
+
+return;
+
 }
 
 
-function formatDuration(ms){
+/* =========================
+   SYMBOLS
+========================= */
 
-const seconds =
-Math.max(
-0,
-Math.ceil(ms/1000)
+if(
+data.msg_type==="active_symbols"
+){
+
+const list =
+data.active_symbols || [];
+
+
+/*
+   Сначала пытаемся найти
+   точное имя.
+*/
+
+let found =
+list.find(
+x=>
+String(
+x.display_name||""
+).toLowerCase()
+.includes(
+"volatility 100"
+)
 );
 
-const minutes =
-Math.floor(seconds/60);
 
-const sec =
-seconds%60;
+/*
+   Если не нашли —
+   используем актуальный код,
+   который Deriv показывает
+   в своей документации.
+*/
 
-return (
-String(minutes).padStart(2,"0")
-+
-":"
-+
-String(sec).padStart(2,"0")
+if(found){
+
+SYMBOL =
+found.symbol;
+
+}
+
+
+symbolEl.textContent =
+SYMBOL;
+
+status.textContent =
+"Инструмент найден • загрузка данных";
+
+
+/*
+   История.
+*/
+
+ws.send(
+JSON.stringify({
+
+ticks_history:SYMBOL,
+
+end:"latest",
+
+count:MAX_POINTS,
+
+style:"ticks",
+
+req_id:2
+
+})
 );
+
+
+/*
+   Живые тики.
+*/
+
+ws.send(
+JSON.stringify({
+
+ticks:SYMBOL,
+
+subscribe:1,
+
+req_id:3
+
+})
+);
+
+return;
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+if(
+data.msg_type==="history" &&
+data.history
+){
+
+prices =
+(data.history.prices||[])
+.map(Number);
+
+times =
+(data.history.times||[])
+.map(Number);
+
+
+if(prices.length){
+
+currentPrice =
+prices[
+prices.length-1
+];
+
+priceEl.textContent =
+currentPrice.toFixed(2);
+
+}
+
+draw();
+
+return;
+
+}
+
+
+/* =========================
+   TICK
+========================= */
+
+if(
+data.msg_type==="tick" &&
+data.tick
+){
+
+const price =
+Number(
+data.tick.quote
+);
+
+const time =
+Number(
+data.tick.epoch
+);
+
+if(
+!Number.isFinite(price)
+)
+return;
+
+
+currentPrice=price;
+
+prices.push(price);
+
+times.push(time);
+
+
+if(prices.length>MAX_POINTS){
+
+prices.shift();
+
+times.shift();
+
+}
+
+
+priceEl.textContent =
+price.toFixed(2);
+
+draw();
+
+analyze();
+
+return;
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+if(data.error){
+
+status.textContent =
+"Ошибка Deriv: "+
+(
+data.error.message||
+"неизвестная ошибка"
+);
+
+console.error(data);
+
+}
+
+};
+
+
+ws.onerror=()=>{
+
+status.textContent =
+"Ошибка соединения";
+
+};
+
+
+ws.onclose=()=>{
+
+status.textContent =
+"Соединение закрыто • переподключение";
+
+reconnectTimer =
+setTimeout(
+connect,
+3000
+);
+
+};
 
 }
 
@@ -605,10 +800,10 @@ String(sec).padStart(2,"0")
    CHART
 ========================= */
 
-function resizeCanvas(){
+function resize(){
 
 const ratio =
-window.devicePixelRatio || 1;
+window.devicePixelRatio||1;
 
 canvas.width =
 canvas.clientWidth*ratio;
@@ -625,37 +820,38 @@ ratio,
 0
 );
 
-drawChart();
+draw();
 
 }
 
 
 window.addEventListener(
 "resize",
-resizeCanvas
+resize
 );
 
 
-function drawChart(){
+function draw(){
 
-const width =
+const w =
 canvas.clientWidth;
 
-const height =
+const h =
 canvas.clientHeight;
 
 ctx.clearRect(
 0,
 0,
-width,
-height
+w,
+h
 );
 
 if(prices.length<2)
 return;
 
+
 const data =
-prices.slice(-250);
+prices.slice(-300);
 
 let min =
 Math.min(...data);
@@ -670,54 +866,45 @@ min-=1;
 
 }
 
-const pad=18;
-
 
 /* GRID */
 
-ctx.strokeStyle="#1e1e25";
+ctx.strokeStyle =
+"#202027";
 
 ctx.lineWidth=1;
 
 for(let i=1;i<5;i++){
 
 const y =
-height*i/5;
+h*i/5;
 
 ctx.beginPath();
 
 ctx.moveTo(0,y);
 
-ctx.lineTo(width,y);
+ctx.lineTo(w,y);
 
 ctx.stroke();
 
 }
 
 
-/* LINE */
+/* PRICE LINE */
 
 ctx.beginPath();
 
 data.forEach(
-(value,i)=>{
+(p,i)=>{
 
 const x =
-pad+
-i/
-Math.max(
-1,
-data.length-1
-)*
-(width-pad*2);
+i/(data.length-1)*w;
 
 const y =
-height-pad-
+h-
 (
-(value-min)/
-(max-min)
-)*
-(height-pad*2);
+(p-min)/(max-min)
+)*h;
 
 if(i===0)
 ctx.moveTo(x,y);
@@ -739,16 +926,13 @@ ctx.stroke();
 const last =
 data[data.length-1];
 
-const x =
-width-pad;
+const x=w;
 
 const y =
-height-pad-
+h-
 (
-(last-min)/
-(max-min)
-)*
-(height-pad*2);
+(last-min)/(max-min)
+)*h;
 
 ctx.beginPath();
 
@@ -768,380 +952,7 @@ ctx.fill();
 
 
 /* =========================
-   DERIV
-========================= */
-
-function connect(){
-
-clearTimeout(reconnectTimer);
-
-if(ws){
-
-try{
-ws.close();
-}catch(e){}
-
-}
-
-SYMBOL=null;
-
-statusEl.textContent =
-"Подключение к Deriv...";
-
-symbolCodeEl.textContent =
-"поиск инструмента...";
-
-ws =
-new WebSocket(
-"wss://ws.binaryws.com/websockets/v3"
-);
-
-
-ws.onopen=()=>{
-
-statusEl.textContent =
-"Deriv подключён • поиск Volatility 100";
-
-
-/*
-  Актуальный API:
-  сначала получаем active_symbols.
-*/
-
-ws.send(
-JSON.stringify({
-
-active_symbols:"full",
-
-req_id:1
-
-})
-);
-
-};
-
-
-ws.onmessage=(event)=>{
-
-let data;
-
-try{
-
-data=
-JSON.parse(event.data);
-
-}catch(e){
-
-return;
-
-}
-
-
-/* SERVER TIME */
-
-if(data.msg_type==="time"){
-
-if(data.time){
-
-serverOffset =
-Number(data.time)*1000-
-Date.now();
-
-}
-
-return;
-
-}
-
-
-/* ACTIVE SYMBOLS */
-
-if(
-data.msg_type==="active_symbols"
-){
-
-const symbols =
-Array.isArray(
-data.active_symbols
-)
-?data.active_symbols
-:[];
-
-
-/*
-  Новый API использует:
-  underlying_symbol
-  underlying_symbol_name
-*/
-
-let found =
-symbols.find(
-item=>{
-
-const name =
-String(
-item.underlying_symbol_name||
-""
-).toLowerCase();
-
-return (
-name===
-TARGET_NAME
-);
-
-}
-);
-
-
-/*
-  Если точного совпадения
-  нет — ищем по Volatility 100.
-*/
-
-if(!found){
-
-found =
-symbols.find(
-item=>
-String(
-item.underlying_symbol_name||
-""
-)
-.toLowerCase()
-.includes(
-"volatility 100"
-)
-);
-
-}
-
-
-if(!found){
-
-statusEl.textContent =
-"Volatility 100 не найден";
-
-console.log(
-"Доступные инструменты:",
-symbols
-);
-
-return;
-
-}
-
-
-SYMBOL =
-found.underlying_symbol;
-
-symbolCodeEl.textContent =
-SYMBOL;
-
-statusEl.textContent =
-"Volatility 100 найден • загрузка истории";
-
-
-/*
-  Получаем историю тиков.
-*/
-
-ws.send(
-JSON.stringify({
-
-ticks_history:SYMBOL,
-
-end:"latest",
-
-count:MAX_TICKS,
-
-style:"ticks",
-
-subscribe:0,
-
-req_id:2
-
-})
-);
-
-
-/*
-  Подписываемся на live ticks.
-*/
-
-ws.send(
-JSON.stringify({
-
-ticks:SYMBOL,
-
-subscribe:1,
-
-req_id:3
-
-})
-);
-
-return;
-
-}
-
-
-/* HISTORY */
-
-if(
-data.msg_type==="history" &&
-data.history
-){
-
-const p =
-Array.isArray(
-data.history.prices
-)
-?data.history.prices
-:[];
-
-const t =
-Array.isArray(
-data.history.times
-)
-?data.history.times
-:[];
-
-
-prices =
-p.map(Number);
-
-times =
-t.map(Number);
-
-
-if(prices.length){
-
-currentPrice =
-prices[
-prices.length-1
-];
-
-priceEl.textContent =
-formatPrice(
-currentPrice
-);
-
-}
-
-
-statusEl.textContent =
-"Подключено • живые данные";
-
-drawChart();
-
-return;
-
-}
-
-
-/* LIVE TICK */
-
-if(
-data.msg_type==="tick" &&
-data.tick
-){
-
-const quote =
-Number(
-data.tick.quote
-);
-
-const epoch =
-Number(
-data.tick.epoch
-);
-
-if(
-!Number.isFinite(quote)
-||
-!Number.isFinite(epoch)
-)
-return;
-
-
-currentPrice =
-quote;
-
-prices.push(quote);
-
-times.push(epoch);
-
-
-if(prices.length>MAX_TICKS){
-
-prices.shift();
-
-times.shift();
-
-}
-
-
-priceEl.textContent =
-formatPrice(
-quote
-);
-
-drawChart();
-
-evaluate();
-
-return;
-
-}
-
-
-/* ERROR */
-
-if(data.error){
-
-statusEl.textContent =
-"Ошибка Deriv: "+
-(
-data.error.message||
-"неизвестная ошибка"
-);
-
-console.error(
-"Deriv error:",
-data.error
-);
-
-}
-
-};
-
-
-ws.onerror=()=>{
-
-statusEl.textContent =
-"Ошибка соединения • переподключение";
-
-};
-
-
-ws.onclose=()=>{
-
-statusEl.textContent =
-"Соединение закрыто • переподключение";
-
-reconnectTimer =
-setTimeout(
-connect,
-3000
-);
-
-};
-
-}
-
-
-/* =========================
-   BASIC MATH
+   MATH
 ========================= */
 
 function average(arr){
@@ -1170,7 +981,7 @@ arr[0]
 }
 
 
-function stddev(arr){
+function deviation(arr){
 
 if(arr.length<2)
 return 0;
@@ -1182,8 +993,10 @@ return Math.sqrt(
 average(
 arr.map(
 x=>
-(x-avg)*
-(x-avg)
+Math.pow(
+x-avg,
+2
+)
 )
 )
 );
@@ -1192,26 +1005,17 @@ x=>
 
 
 /* =========================
-   SIGNAL MODEL
+   ANALYSIS
 ========================= */
 
-function calculateSignal(){
+function analyze(){
 
-if(prices.length<MIN_DATA){
+if(
+entry ||
+prices.length<100
+)
+return;
 
-return{
-direction:"WAIT",
-confidence:0
-};
-
-}
-
-
-/*
-  Работаем с тиками,
-  но рассчитываем несколько
-  временных окон.
-*/
 
 const short =
 prices.slice(-20);
@@ -1223,27 +1027,15 @@ const long =
 prices.slice(-120);
 
 
-const shortSlope =
+const s =
 slope(short);
 
-const mediumSlope =
+const m =
 slope(medium);
 
-const longSlope =
+const l =
 slope(long);
 
-
-const shortAvg =
-average(short);
-
-const mediumAvg =
-average(medium);
-
-
-/*
-  Изменения между соседними
-  тиками для оценки шума.
-*/
 
 const changes=[];
 
@@ -1260,20 +1052,18 @@ long[i]-long[i-1]
 }
 
 
-const volatility =
-stddev(changes);
+const noise =
+deviation(changes);
 
 
 if(
-!Number.isFinite(volatility)
-||
-volatility<=0
+noise<=0 ||
+!Number.isFinite(noise)
 ){
 
-return{
-direction:"WAIT",
-confidence:0
-};
+showWait();
+
+return;
 
 }
 
@@ -1281,64 +1071,46 @@ confidence:0
 let score=0;
 
 
-/* SHORT */
-
-if(shortSlope>0)
+if(s>0)
 score+=2;
 
-if(shortSlope<0)
+if(s<0)
 score-=2;
 
 
-/* MEDIUM */
-
-if(mediumSlope>0)
+if(m>0)
 score+=1.5;
 
-if(mediumSlope<0)
+if(m<0)
 score-=1.5;
 
 
-/* LONG */
-
-if(longSlope>0)
-score+=0.5;
-
-if(longSlope<0)
-score-=0.5;
-
-
-/* POSITION */
-
-if(shortAvg>mediumAvg)
+if(l>0)
 score+=1;
 
-if(shortAvg<mediumAvg)
+if(l<0)
 score-=1;
 
 
-/*
-  Если движение слишком маленькое
-  относительно шума — WAIT.
-*/
-
 const movement =
-Math.abs(shortSlope);
+Math.abs(s);
+
 
 if(
 movement<
-volatility*0.45
+noise*0.5
 ){
 
-return{
-direction:"WAIT",
-confidence:0
-};
+showWait();
+
+return;
 
 }
 
 
-let direction="WAIT";
+let direction =
+"WAIT";
+
 
 if(score>=3)
 direction="UP";
@@ -1349,20 +1121,12 @@ direction="DOWN";
 
 if(direction==="WAIT"){
 
-return{
-direction:"WAIT",
-confidence:0
-};
+showWait();
+
+return;
 
 }
 
-
-/*
-  Это НЕ вероятность WIN.
-
-  Это внутренний показатель
-  силы текущего сигнала.
-*/
 
 const confidence =
 Math.min(
@@ -1374,70 +1138,15 @@ Math.abs(score)*6
 );
 
 
-return{
-direction,
-confidence
-};
-
-}
-
-
-/* =========================
-   SIGNAL
-========================= */
-
-function evaluate(){
-
-if(virtualEntry)
-return;
-
-if(
-now()<
-signalCooldown
-)
-return;
-
-
-const result =
-calculateSignal();
-
-
-if(
-result.direction==="WAIT"
-){
-
-showWait();
-
-return;
-
-}
-
-
-if(
-result.confidence<60
-){
-
-showWait();
-
-return;
-
-}
-
-
-/*
-  Не создаём новый сигнал
-  на каждом тике.
-*/
-
 if(
 currentSignal &&
 currentSignal.direction===
-result.direction &&
-currentSignal.minutes===
-selectedMinutes
+direction &&
+currentSignal.timeframe===
+timeframe
 ){
 
-updateSignalAge();
+updateAge();
 
 return;
 
@@ -1446,26 +1155,18 @@ return;
 
 currentSignal={
 
-direction:
-result.direction,
+direction,
 
-confidence:
-result.confidence,
+confidence,
 
-price:
-currentPrice,
+price:currentPrice,
 
-time:
-now(),
+time:Date.now(),
 
-minutes:
-selectedMinutes
+timeframe
 
 };
 
-
-signalCooldown =
-now()+5000;
 
 renderSignal();
 
@@ -1478,8 +1179,9 @@ renderSignal();
 
 function showWait(){
 
-if(virtualEntry)
+if(entry)
 return;
+
 
 signalEl.textContent="WAIT";
 
@@ -1487,9 +1189,9 @@ signalEl.className=
 "signal wait";
 
 confidenceEl.textContent=
-"Нет достаточно сильного сигнала";
+"Недостаточно сильного движения";
 
-signalAgeEl.textContent="";
+enterBtn.disabled=true;
 
 }
 
@@ -1500,10 +1202,10 @@ if(!currentSignal)
 return;
 
 
-signalEl.textContent=
+signalEl.textContent =
 currentSignal.direction;
 
-signalEl.className=
+signalEl.className =
 "signal "+
 (
 currentSignal.direction==="UP"
@@ -1512,91 +1214,78 @@ currentSignal.direction==="UP"
 );
 
 
-confidenceEl.textContent=
-"Сила модели: "+
+confidenceEl.textContent =
+"Сила сигнала: "+
 currentSignal.confidence+
-"% • это НЕ вероятность выигрыша";
+"% • не вероятность выигрыша";
 
 
 enterBtn.disabled=false;
 
-cancelBtn.disabled=true;
-
-updateSignalAge();
+updateAge();
 
 }
 
 
-function updateSignalAge(){
+function updateAge(){
 
 if(!currentSignal)
 return;
 
 const age =
 Math.floor(
-(
-now()-
-currentSignal.time
-)/1000
+(Date.now()-
+currentSignal.time)/1000
 );
 
-signalAgeEl.textContent=
+signalAgeEl.textContent =
 "Сигнал появился "+
-Math.max(0,age)+
+age+
 " сек. назад";
 
 }
 
 
 /* =========================
-   VIRTUAL ENTRY
+   ENTER
 ========================= */
 
 enterBtn.onclick=()=>{
 
-if(!currentSignal)
-return;
-
 if(
+!currentSignal ||
 !Number.isFinite(currentPrice)
 )
 return;
 
 
-virtualEntry={
+entry={
 
 direction:
 currentSignal.direction,
 
-minutes:
-currentSignal.minutes,
-
-signalTime:
-currentSignal.time,
+timeframe,
 
 signalPrice:
 currentSignal.price,
 
-entryTime:
-now(),
-
 entryPrice:
 currentPrice,
 
-expiryTime:
-now()+
-currentSignal.minutes*
+entryTime:
+Date.now(),
+
+expiry:
+Date.now()+
+timeframe*
 60*
 1000
 
 };
 
 
-entryPriceEl.textContent=
-formatPrice(
-virtualEntry.entryPrice
-);
-
+entryPriceEl.textContent =
+currentPrice.toFixed(2);
 
 resultEl.textContent="";
 
@@ -1613,7 +1302,7 @@ cancelBtn.disabled=false;
 
 cancelBtn.onclick=()=>{
 
-virtualEntry=null;
+entry=null;
 
 entryPriceEl.textContent=
 "Не зафиксирован";
@@ -1624,37 +1313,39 @@ timerEl.textContent="—";
 
 cancelBtn.disabled=true;
 
-signalCooldown=
-now()+1000;
-
 };
 
 
 /* =========================
-   EXPIRY
+   TIMER
 ========================= */
 
-function checkEntry(){
+function tickTimer(){
 
-updateSignalAge();
-
-
-if(
-!virtualEntry
-){
+if(!entry){
 
 if(currentSignal){
 
-const expiry =
+const end =
 currentSignal.time+
-currentSignal.minutes*
+timeframe*
 60*
 1000;
 
-timerEl.textContent=
-formatDuration(
-expiry-now()
+const remaining =
+Math.max(
+0,
+end-Date.now()
 );
+
+timerEl.textContent =
+formatDuration(
+remaining
+);
+
+}else{
+
+timerEl.textContent="—";
 
 }
 
@@ -1664,20 +1355,19 @@ return;
 
 
 const remaining =
-virtualEntry.expiryTime-
-now();
+entry.expiry-Date.now();
 
 
 if(remaining<=0){
 
-finishEntry();
+finish();
 
 return;
 
 }
 
 
-timerEl.textContent=
+timerEl.textContent =
 formatDuration(
 remaining
 );
@@ -1689,73 +1379,61 @@ remaining
    FINISH
 ========================= */
 
-function finishEntry(){
+function finish(){
 
-if(!virtualEntry)
-return;
-
-if(
+if(!entry ||
 !Number.isFinite(currentPrice)
 )
 return;
 
 
-const finalPrice =
+const final =
 currentPrice;
 
 let win=false;
 
 
 if(
-virtualEntry.direction==="UP"
+entry.direction==="UP"
 ){
 
-win=
-finalPrice>
-virtualEntry.entryPrice;
+win =
+final>
+entry.entryPrice;
 
 }
 
 
 if(
-virtualEntry.direction==="DOWN"
+entry.direction==="DOWN"
 ){
 
-win=
-finalPrice<
-virtualEntry.entryPrice;
+win =
+final<
+entry.entryPrice;
 
 }
 
 
 const record={
 
-id:Date.now(),
+time:
+entry.entryTime,
 
 direction:
-virtualEntry.direction,
+entry.direction,
 
-minutes:
-virtualEntry.minutes,
-
-signalTime:
-virtualEntry.signalTime,
+timeframe:
+entry.timeframe,
 
 signalPrice:
-virtualEntry.signalPrice,
-
-entryTime:
-virtualEntry.entryTime,
+entry.signalPrice,
 
 entryPrice:
-virtualEntry.entryPrice,
-
-expiryTime:
-virtualEntry.expiryTime,
+entry.entryPrice,
 
 finalPrice:
-
-finalPrice,
+final,
 
 result:
 win
@@ -1767,7 +1445,7 @@ win
 
 history.unshift(record);
 
-history=
+history =
 history.slice(0,100);
 
 
@@ -1777,19 +1455,19 @@ else
 losses++;
 
 
-saveHistory();
+save();
 
 updateStats();
 
 renderHistory();
 
 
-resultEl.textContent=
+resultEl.textContent =
 win
 ?"WIN"
 :"LOSS";
 
-resultEl.className=
+resultEl.className =
 "result "+
 (
 win
@@ -1798,23 +1476,47 @@ win
 );
 
 
-timerEl.textContent=
+timerEl.textContent =
 "ЗАВЕРШЕНО";
 
 
-virtualEntry=null;
+entry=null;
 
 currentSignal=null;
 
 cancelBtn.disabled=true;
 
-signalCooldown=
-now()+3000;
-
-
 setTimeout(
 showWait,
-1500
+1200
+);
+
+}
+
+
+/* =========================
+   FORMAT
+========================= */
+
+function formatDuration(ms){
+
+const total =
+Math.ceil(
+Math.max(0,ms)/1000
+);
+
+const min =
+Math.floor(total/60);
+
+const sec =
+total%60;
+
+return(
+String(min).padStart(2,"0")
++
+":"
++
+String(sec).padStart(2,"0")
 );
 
 }
@@ -1826,27 +1528,24 @@ showWait,
 
 function updateStats(){
 
-const total=
+const total =
 wins+losses;
 
 document.getElementById(
 "total"
-).textContent=
-total;
+).textContent=total;
 
 document.getElementById(
 "wins"
-).textContent=
-wins;
+).textContent=wins;
 
 document.getElementById(
 "losses"
-).textContent=
-losses;
+).textContent=losses;
 
 document.getElementById(
 "accuracy"
-).textContent=
+).textContent =
 total
 ?Math.round(
 wins/total*100
@@ -1862,7 +1561,7 @@ wins/total*100
 
 function renderHistory(){
 
-const container=
+const box =
 document.getElementById(
 "history"
 );
@@ -1870,7 +1569,7 @@ document.getElementById(
 
 if(!history.length){
 
-container.textContent=
+box.textContent =
 "Пока нет завершённых входов.";
 
 return;
@@ -1878,69 +1577,66 @@ return;
 }
 
 
-container.innerHTML=
+box.innerHTML =
 history
 .slice(0,50)
-.map(item=>{
+.map(
+x=>`
 
-return `
+<div class="historyRow">
 
-<div class="row">
-
-<div class="rowTop">
-
-<span>
-${formatTime(item.entryTime)}
+<div>
+${new Date(x.time)
+.toLocaleTimeString("ru-RU")}
 •
-${item.direction}
+${x.direction}
 •
-${item.minutes} мин
-</span>
+${x.timeframe} мин
 
 <b class="${
-item.result==="WIN"
+x.result==="WIN"
 ?"win"
 :"loss"
 }">
-${item.result}
+${x.result}
 </b>
 
 </div>
 
-<div class="rowBottom">
+<div class="historyBottom">
 
 Сигнал:
-${formatPrice(item.signalPrice)}
+${x.signalPrice.toFixed(2)}
 
 → Вход:
-${formatPrice(item.entryPrice)}
+${x.entryPrice.toFixed(2)}
 
 → Конец:
-${formatPrice(item.finalPrice)}
+${x.finalPrice.toFixed(2)}
 
 </div>
 
 </div>
 
-`;
-
-})
+`
+)
 .join("");
 
 }
 
 
 /* =========================
-   TIMEFRAME
+   TIMEFRAME BUTTONS
 ========================= */
 
 document
 .querySelectorAll(".tf")
-.forEach(button=>{
+.forEach(
+button=>{
 
 button.onclick=()=>{
 
-if(virtualEntry)
+if(entry)
 return;
 
 
@@ -1948,30 +1644,24 @@ document
 .querySelectorAll(".tf")
 .forEach(
 b=>
-b.classList.remove(
-"active"
-)
+b.classList.remove("active")
 );
 
 button.classList.add("active");
 
-
-selectedMinutes=
+timeframe =
 Number(
-button.dataset.minutes
+button.dataset.min
 );
 
-
 currentSignal=null;
-
-signalCooldown=
-now();
 
 showWait();
 
 };
 
-});
+}
+);
 
 
 /* =========================
@@ -1979,7 +1669,7 @@ showWait();
 ========================= */
 
 setInterval(
-checkEntry,
+tickTimer,
 250
 );
 
@@ -1988,9 +1678,9 @@ checkEntry,
    START
 ========================= */
 
-loadHistory();
+load();
 
-resizeCanvas();
+resize();
 
 connect();
 
